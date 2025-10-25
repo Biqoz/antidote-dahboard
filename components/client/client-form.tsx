@@ -17,6 +17,17 @@ import {
 import { CreateClientData, Client } from "@/types/client";
 import { cn } from "@/lib/utils";
 
+// Liste des secteurs d'activité (basée sur Group Optimal)
+const SECTEURS_ACTIVITE = [
+  { value: "Médecine", label: "Médecine" },
+  { value: "Industrie", label: "Industrie" },
+  { value: "Construction", label: "Construction" },
+  { value: "IT et Technologie", label: "IT et Technologie" },
+  { value: "Ressources Humaines", label: "Ressources Humaines" },
+  { value: "Consultants Business", label: "Consultants Business" },
+  { value: "Autre", label: "Autre" },
+];
+
 // Liste des pays disponibles avec préfixes téléphoniques
 const COUNTRIES = [
   { value: "BE", label: "Belgique", prefix: "+32" },
@@ -323,12 +334,23 @@ export function ClientForm({
                 <Label htmlFor="secteur_activite">
                   Secteur d&apos;activité
                 </Label>
-                <Input
-                  id="secteur_activite"
-                  {...register("secteur_activite")}
-                  placeholder="Ex: Développement logiciel"
-                  className={errors.secteur_activite ? "border-red-500" : ""}
-                />
+                <Select
+                  value={watch("secteur_activite") || ""}
+                  onValueChange={(value) => setValue("secteur_activite", value)}
+                >
+                  <SelectTrigger
+                    className={errors.secteur_activite ? "border-red-500" : ""}
+                  >
+                    <SelectValue placeholder="Sélectionner un secteur d'activité" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {SECTEURS_ACTIVITE.map((secteur) => (
+                      <SelectItem key={secteur.value} value={secteur.value}>
+                        {secteur.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </Field>
             </div>
 
