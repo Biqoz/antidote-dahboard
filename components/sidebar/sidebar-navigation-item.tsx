@@ -9,16 +9,21 @@ interface SidebarNavigationItemProps {
   item: NavigationItem;
 }
 
-export const SidebarNavigationItem = React.memo(function SidebarNavigationItem({ item }: SidebarNavigationItemProps) {
+export const SidebarNavigationItem = React.memo(function SidebarNavigationItem({
+  item,
+}: SidebarNavigationItemProps) {
   const IconComponent = item.icon;
 
   // Fonction pour rendre le badge intelligent
-  const renderBadge = (badge: string | number | BadgeConfig | undefined, isDisabled: boolean = false) => {
+  const renderBadge = (
+    badge: string | number | BadgeConfig | undefined,
+    isDisabled: boolean = false
+  ) => {
     if (!badge) return null;
 
     if (typeof badge === "string" || typeof badge === "number") {
       return (
-        <Badge 
+        <Badge
           variant={item.isActive ? "default" : "secondary"}
           className={cn("text-xs", isDisabled && "opacity-50")}
         >
@@ -30,15 +35,19 @@ export const SidebarNavigationItem = React.memo(function SidebarNavigationItem({
     // Badge configuré avec options avancées
     const badgeConfig = badge as BadgeConfig;
     return (
-      <Badge 
-        variant={badgeConfig.variant || (item.isActive ? "default" : "secondary")}
+      <Badge
+        variant={
+          badgeConfig.variant || (item.isActive ? "default" : "secondary")
+        }
         className={cn(
           "text-xs ml-auto transition-all duration-200",
           badgeConfig.pulse && "animate-pulse",
           isDisabled && "opacity-50"
         )}
       >
-        {badgeConfig.showCount && badgeConfig.count ? badgeConfig.count : badgeConfig.text}
+        {badgeConfig.showCount && badgeConfig.count
+          ? badgeConfig.count
+          : badgeConfig.text}
       </Badge>
     );
   };
@@ -46,7 +55,7 @@ export const SidebarNavigationItem = React.memo(function SidebarNavigationItem({
   // Point de notification rouge
   const renderNotification = () => {
     if (!item.notification) return null;
-    
+
     return (
       <div className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full animate-pulse" />
     );
@@ -55,7 +64,10 @@ export const SidebarNavigationItem = React.memo(function SidebarNavigationItem({
   if (item.disabled) {
     return (
       <SidebarMenuItem className="relative">
-        <div title={item.description || "Module non disponible"} className="w-full">
+        <div
+          title={item.description || "Module non disponible"}
+          className="w-full"
+        >
           <SidebarMenuButton
             disabled
             className="opacity-50 cursor-not-allowed w-full"
@@ -74,22 +86,23 @@ export const SidebarNavigationItem = React.memo(function SidebarNavigationItem({
 
   return (
     <SidebarMenuItem className="relative">
-      <SidebarMenuButton 
-        asChild 
+      <SidebarMenuButton
+        asChild
         isActive={item.isActive}
         className={cn(
-          "w-full transition-all duration-200 hover:bg-accent/50",
-          item.isActive && "bg-sidebar-accent text-sidebar-accent-foreground shadow-sm"
+          "w-full transition-all duration-200 hover:bg-blue-50 hover:text-blue-700",
+          item.isActive &&
+            "bg-sidebar-accent text-sidebar-accent-foreground shadow-sm"
         )}
       >
         <Link href={item.url} title={item.description}>
           <div className="flex items-center gap-2 w-full">
             {IconComponent && (
-              <IconComponent 
+              <IconComponent
                 className={cn(
                   "h-4 w-4 transition-colors duration-200",
                   item.isActive && "text-sidebar-accent-foreground"
-                )} 
+                )}
               />
             )}
             <span className="flex-1">{item.title}</span>

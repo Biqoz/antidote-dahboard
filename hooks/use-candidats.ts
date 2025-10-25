@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Candidat } from "@/types/candidat";
+import { Candidat, CandidatStats } from "@/types/candidat";
 import { CandidatService } from "@/services/profils-service";
 
 export function useCandidats() {
@@ -8,11 +8,12 @@ export function useCandidats() {
   const [error, setError] = useState<string | null>(null);
 
   // Stats calculées à partir des candidats
-  const stats = {
+  const stats: CandidatStats = {
     total: candidats.length,
     actifs: candidats.filter((c) => c.statut === "actif").length,
     en_recherche: candidats.filter((c) => c.statut === "en_recherche").length,
     places: candidats.filter((c) => c.statut === "place").length,
+    inactifs: candidats.filter((c) => c.statut === "inactif").length,
   };
 
   const fetchCandidats = async () => {

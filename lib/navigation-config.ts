@@ -36,21 +36,21 @@ export const navigationConfig: NavigationData = {
       ],
     },
     {
-      title: "Entreprise",
-      url: "/dashboard/entreprise",
+      title: "CLIENTS",
+      url: "/dashboard/clients",
       icon: Building2,
       items: [
         {
           title: "Mandats",
-          url: "/dashboard/entreprise/mandats",
+          url: "/dashboard/clients/mandats",
           icon: FileText,
           description: "Gestion des mandats de recrutement",
         },
         {
-          title: "Candidats",
-          url: "/dashboard/entreprise/candidats",
+          title: "Contacts",
+          url: "/dashboard/clients/contacts",
           icon: Users,
-          description: "Base de données candidats",
+          description: "Base de données contacts",
         },
       ],
     },
@@ -60,10 +60,10 @@ export const navigationConfig: NavigationData = {
       icon: Database,
       items: [
         {
-          title: "Candidats",
+          title: "Profils",
           url: "/dashboard/vivier/candidats",
           icon: UserCheck,
-          description: "Base de données candidats",
+          description: "Base de données profils",
         },
       ],
     },
@@ -84,7 +84,7 @@ export const navigationConfig: NavigationData = {
           },
         },
         {
-          title: "Candidature WP",
+          title: "Candidatures",
           url: "/dashboard/sourcing/candidature-wp",
           icon: Globe,
           description: "Candidatures via WordPress",

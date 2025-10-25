@@ -5,6 +5,7 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { PageLayout } from "@/components/layout/page-layout";
 import { ClientView } from "@/components/client/client-view";
 import { ClientDetailView } from "@/components/client/client-detail-view";
+import { ClientForm } from "@/components/client/client-form";
 import { Client } from "@/types/client";
 import { Mandat } from "@/types/mandat";
 import { useMandats } from "@/hooks/use-mandats";
@@ -13,6 +14,7 @@ import { ClientService } from "@/services/client-service";
 export default function ClientsPage() {
   const [selectedClient, setSelectedClient] = useState<Client | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
   const searchParams = useSearchParams();
   const router = useRouter();
   const clientId = searchParams.get("clientId");
@@ -22,31 +24,31 @@ export default function ClientsPage() {
   );
 
   const handleNavigateToMandat = (mandat: Mandat) => {
-    router.push(`/dashboard/entreprise/mandats?mandatId=${mandat.id}`);
+    router.push(`/dashboard/clients/mandats?mandatId=${mandat.id}`);
   };
 
   const handleNavigateToHome = () => {
-    router.push("/dashboard/entreprise");
+    router.push("/dashboard/clients");
   };
 
   const handleNavigateToClients = () => {
-    router.push("/dashboard/entreprise/clients");
+    router.push("/dashboard/clients/contacts");
   };
 
   const handleNavigateToMandats = () => {
-    router.push("/dashboard/entreprise/mandats");
+    router.push("/dashboard/clients/mandats");
   };
 
   const handleCreateMandat = () => {
     // Naviguer vers la page des mandats avec le client pré-sélectionné
     router.push(
-      `/dashboard/entreprise/mandats?clientId=${selectedClient?.id}&action=create`
+      `/dashboard/clients/mandats?clientId=${selectedClient?.id}&action=create`
     );
   };
 
   const breadcrumbs = [
-    { label: "Entreprise", href: "/dashboard/entreprise" },
-    { label: "Clients", href: "/dashboard/entreprise/clients" },
+    { label: "CLIENTS", href: "/dashboard/clients" },
+    { label: "Contacts", href: "/dashboard/clients/contacts" },
   ];
 
   // Charger automatiquement un client si l'ID est dans l'URL
@@ -74,6 +76,10 @@ export default function ClientsPage() {
     setSelectedClient(client);
   };
 
+  const handleEdit = () => {
+    setIsEditing(true);
+  };
+
   if (isLoading) {
     return (
       <PageLayout breadcrumbs={breadcrumbs}>
@@ -88,6 +94,28 @@ export default function ClientsPage() {
   }
 
   if (selectedClient) {
+    if (isEditing) {
+      return (
+        <PageLayout breadcrumbs={breadcrumbs}>
+          <ClientForm
+            isOpen={true}
+            onToggle={() => setIsEditing(false)}
+            client={selectedClient}
+            mode="edit"
+            onSubmit={async (updatedClient) => {
+              try {
+                await ClientService.update({ id: selectedClient.id, ...updatedClient });
+                setSelectedClient({ ...selectedClient, ...updatedClient });
+                setIsEditing(false);
+              } catch (error) {
+                console.error("Erreur lors de la mise à jour du client:", error);
+              }
+            }}
+          />
+        </PageLayout>
+      );
+    }
+
     return (
       <PageLayout breadcrumbs={breadcrumbs}>
         <ClientDetailView
@@ -100,6 +128,7 @@ export default function ClientsPage() {
           onNavigateToHome={handleNavigateToHome}
           onNavigateToCandidats={handleNavigateToClients}
           onNavigateToMandats={handleNavigateToMandats}
+          onEdit={handleEdit}
         />
       </PageLayout>
     );

@@ -36,7 +36,9 @@ export function MandatDetails({ mandat }: MandatDetailsProps) {
               <Clock className="h-4 w-4 text-gray-400" />
               <span className="text-gray-600">Type de contrat:</span>
               <span className="font-medium text-gray-900">
-                {mandat.type_contrat === "determine" ? "Déterminé" : "Indéterminé"}
+                {mandat.type_contrat === "determine"
+                  ? "Déterminé"
+                  : "Indéterminé"}
               </span>
             </div>
           )}
@@ -54,7 +56,7 @@ export function MandatDetails({ mandat }: MandatDetailsProps) {
           {mandat.localisation && (
             <div className="flex items-center gap-2 text-sm">
               <MapPin className="h-4 w-4 text-gray-400" />
-              <span className="text-gray-600">Localisation:</span>
+              <span className="text-gray-600">Lieu:</span>
               <span className="font-medium text-gray-900">
                 {mandat.localisation}
               </span>

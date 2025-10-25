@@ -23,10 +23,10 @@ export function ClientHeader({
             <Building2 className="h-6 w-6 text-gray-700" />
           </div>
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Clients</h1>
+            <h1 className="text-2xl font-bold text-gray-900">Contact</h1>
             <div className="flex items-center gap-4 text-sm text-gray-600">
               <span>
-                {clientsCount} client{clientsCount > 1 ? "s" : ""} au total
+                {clientsCount} contact{clientsCount > 1 ? "s" : ""} au total
               </span>
               {stats && (
                 <>
@@ -58,7 +58,7 @@ export function ClientHeader({
               </>
             ) : (
               <>
-                <Plus className="h-4 w-4 mr-2" /> Nouveau client
+                <Plus className="h-4 w-4 mr-2" /> Nouveau contact
               </>
             )}
           </Button>

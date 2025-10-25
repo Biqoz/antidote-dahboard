@@ -35,7 +35,6 @@ const mandatSchema = z.object({
   date_debut: z.string().optional(),
   priorite: z.enum(["basse", "normale", "haute"]).optional(),
   nombre_postes: z.number().min(1).optional(),
-  notes: z.string().optional(),
   entreprise_id: z.string().min(1, "Le client est requis"),
 });
 
@@ -73,7 +72,6 @@ export function MandatForm({
       date_debut: mandat?.date_debut || "",
       priorite: mandat?.priorite || "normale",
       nombre_postes: mandat?.nombre_postes || 1,
-      notes: mandat?.notes || "",
       entreprise_id: mandat?.entreprise_id || preSelectedClientId || "",
     },
   });
@@ -93,7 +91,6 @@ export function MandatForm({
         date_debut: mandat.date_debut || "",
         priorite: mandat.priorite || "normale",
         nombre_postes: mandat.nombre_postes || 1,
-        notes: mandat.notes || "",
         entreprise_id: mandat.entreprise_id,
       });
     } else {
@@ -109,7 +106,6 @@ export function MandatForm({
         date_debut: "",
         priorite: "normale",
         nombre_postes: 1,
-        notes: "",
         entreprise_id: preSelectedClientId || "",
       });
     }
@@ -173,7 +169,10 @@ export function MandatForm({
                     <FormControl>
                       <SelectTrigger>
                         {field.value && clients.length > 0 ? (
-                          <span>{clients.find((client) => client.id === field.value)?.nom || "Client introuvable"}</span>
+                          <span>
+                            {clients.find((client) => client.id === field.value)
+                              ?.nom || "Client introuvable"}
+                          </span>
                         ) : (
                           <SelectValue
                             placeholder={
@@ -204,7 +203,10 @@ export function MandatForm({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Type de contrat</FormLabel>
-                  <Select onValueChange={field.onChange} value={field.value || ""}>
+                  <Select
+                    onValueChange={field.onChange}
+                    value={field.value || ""}
+                  >
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder="Sélectionner un type de contrat" />
@@ -249,9 +251,9 @@ export function MandatForm({
               name="localisation"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Localisation</FormLabel>
+                  <FormLabel>Lieu</FormLabel>
                   <FormControl>
-                    <Input placeholder="Ex: Paris, Remote, Lyon" {...field} />
+                    <Input placeholder="Ex: Paris, Bruxelles" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -326,7 +328,10 @@ export function MandatForm({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Priorité</FormLabel>
-                  <Select onValueChange={field.onChange} value={field.value || ""}>
+                  <Select
+                    onValueChange={field.onChange}
+                    value={field.value || ""}
+                  >
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder="Sélectionner une priorité" />
@@ -402,23 +407,7 @@ export function MandatForm({
             )}
           />
 
-          <FormField
-            control={form.control}
-            name="notes"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Notes</FormLabel>
-                <FormControl>
-                  <Textarea
-                    placeholder="Notes internes, commentaires..."
-                    className="min-h-[80px]"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+
 
           <div className="flex items-center gap-3 pt-4">
             <Button

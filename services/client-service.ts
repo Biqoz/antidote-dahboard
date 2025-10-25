@@ -7,7 +7,7 @@ import {
 } from "@/types/client";
 
 export class ClientService {
-  private static readonly TABLE_NAME = "clients";
+  private static readonly TABLE_NAME = "contacts";
 
   static async getAll(filters?: ClientFilters): Promise<Client[]> {
     try {

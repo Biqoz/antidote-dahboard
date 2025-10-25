@@ -4,7 +4,7 @@ import { Candidat } from "@/types/candidat";
 export class CandidatService {
   static async getAll(): Promise<Candidat[]> {
     const { data, error } = await supabase
-      .from("candidats")
+      .from("profils")
       .select("*")
       .order("created_at", { ascending: false });
 
@@ -18,7 +18,7 @@ export class CandidatService {
 
   static async getById(id: string): Promise<Candidat | null> {
     const { data, error } = await supabase
-      .from("candidats")
+      .from("profils")
       .select("*")
       .eq("id", id)
       .single();
@@ -35,7 +35,7 @@ export class CandidatService {
     candidat: Omit<Candidat, "id" | "created_at" | "updated_at">
   ): Promise<Candidat> {
     const { data, error } = await supabase
-      .from("candidats")
+      .from("profils")
       .insert([candidat])
       .select()
       .single();
@@ -53,7 +53,7 @@ export class CandidatService {
     candidat: Partial<Candidat>
   ): Promise<Candidat> {
     const { data, error } = await supabase
-      .from("candidats")
+      .from("profils")
       .update({ ...candidat, updated_at: new Date().toISOString() })
       .eq("id", id)
       .select()
@@ -68,7 +68,7 @@ export class CandidatService {
   }
 
   static async delete(id: string): Promise<void> {
-    const { error } = await supabase.from("candidats").delete().eq("id", id);
+    const { error } = await supabase.from("profils").delete().eq("id", id);
 
     if (error) {
       console.error("Erreur lors de la suppression du candidat:", error);
@@ -80,7 +80,7 @@ export class CandidatService {
     specialisation: string
   ): Promise<Candidat[]> {
     const { data, error } = await supabase
-      .from("candidats")
+      .from("profils")
       .select("*")
       .ilike("specialisation", `%${specialisation}%`)
       .order("created_at", { ascending: false });
@@ -101,7 +101,7 @@ export class CandidatService {
       .select(
         `
         *,
-        candidats (*)
+        profils (*)
       `
       )
       .eq("mandat_id", mandatId);
@@ -111,6 +111,6 @@ export class CandidatService {
       throw error;
     }
 
-    return data?.map((item) => item.candidats).filter(Boolean) || [];
+    return data?.map((item) => item.profils).filter(Boolean) || [];
   }
 }

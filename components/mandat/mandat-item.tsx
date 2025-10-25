@@ -198,6 +198,8 @@ export function MandatItem({ mandat }: MandatItemProps) {
             </div>
           )}
 
+
+
           {/* Actions - Seulement Éditer */}
           <div className="flex items-center gap-2 pt-3 border-t border-gray-100">
             <Button size="sm" variant="outline" className="text-gray-600 hover:text-gray-900">

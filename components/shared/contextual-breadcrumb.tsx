@@ -37,8 +37,8 @@ export function ContextualBreadcrumb({
 
       <ChevronRight className="h-3 w-3 text-gray-400" />
 
-      {/* Entreprise */}
-      <span className="text-sm text-gray-600">Entreprise</span>
+      {/* CLIENTS */}
+      <span className="text-sm text-gray-600">CLIENTS</span>
 
       {/* Si on a un client ou un mandat */}
       {(client || mandat) && (

@@ -14,6 +14,7 @@ interface MandatViewProps {
 
 interface MandatFormData {
   titre: string;
+  entreprise_id: string;
   description?: string;
   type_contrat?: "determine" | "indetermine";
   niveau_experience?: string;
@@ -24,8 +25,6 @@ interface MandatFormData {
   date_debut?: string;
   priorite?: "basse" | "normale" | "haute";
   nombre_postes?: number;
-  notes?: string;
-  entreprise_id: string;
 }
 
 export function MandatView({

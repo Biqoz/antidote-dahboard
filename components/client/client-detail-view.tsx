@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { ContextNavigation } from "@/components/shared/context-navigation";
 import { MandatList } from "@/components/mandat/mandat-list";
+import { ContactNotes } from "@/components/contact/contact-notes";
 import { Client } from "@/types/client";
 import { Mandat } from "@/types/mandat";
 import { Badge } from "@/components/ui/badge";
@@ -15,6 +16,8 @@ import {
   User,
   FileText,
   Plus,
+  MessageSquare,
+  Edit,
 } from "lucide-react";
 
 interface ClientDetailViewProps {
@@ -27,9 +30,10 @@ interface ClientDetailViewProps {
   onNavigateToHome?: () => void;
   onNavigateToCandidats?: () => void;
   onNavigateToMandats?: () => void;
+  onEdit?: () => void;
 }
 
-type TabType = "overview" | "mandats";
+type TabType = "overview" | "mandats" | "notes";
 
 export function ClientDetailView({
   client,
@@ -38,6 +42,7 @@ export function ClientDetailView({
   onBack,
   onMandatSelect,
   onCreateMandat,
+  onEdit,
 }: ClientDetailViewProps) {
   const [activeTab, setActiveTab] = useState<TabType>("overview");
 
@@ -68,10 +73,10 @@ export function ClientDetailView({
           <div className="bg-gray-50 rounded-lg p-3">
             <div className="flex items-center gap-2 mb-1">
               <User className="h-4 w-4 text-gray-600" />
-              <span className="text-xs font-medium text-gray-600">Contact</span>
+              <span className="text-xs font-medium text-gray-600">Contact administratif</span>
             </div>
             <p className="text-sm text-gray-900">
-              {client.contact_principal || "N/A"}
+              {client.contact_administratif || "N/A"}
             </p>
           </div>
 
@@ -87,10 +92,24 @@ export function ClientDetailView({
             <div className="flex items-center gap-2 mb-1">
               <Phone className="h-4 w-4 text-gray-600" />
               <span className="text-xs font-medium text-gray-600">
-                Téléphone
+                Tél fixe
               </span>
             </div>
-            <p className="text-sm text-gray-900">{client.telephone || "N/A"}</p>
+            <p className="text-sm text-gray-900">
+              {client.tel_fixe || "N/A"}
+            </p>
+          </div>
+
+          <div className="bg-gray-50 rounded-lg p-3">
+            <div className="flex items-center gap-2 mb-1">
+              <Phone className="h-4 w-4 text-gray-600" />
+              <span className="text-xs font-medium text-gray-600">
+                Tél portable
+              </span>
+            </div>
+            <p className="text-sm text-gray-900">
+              {client.tel_portable || "N/A"}
+            </p>
           </div>
 
           <div className="bg-gray-50 rounded-lg p-3">
@@ -249,9 +268,22 @@ export function ClientDetailView({
               </h1>
             </div>
           </div>
-          <Badge className={`${getStatusColor(client.statut)} text-xs`}>
-            {client.statut || "Actif"}
-          </Badge>
+          <div className="flex items-center gap-2">
+            {onEdit && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={onEdit}
+                className="text-gray-600 hover:text-gray-900"
+              >
+                <Edit className="h-4 w-4 mr-2" />
+                Éditer
+              </Button>
+            )}
+            <Badge className={`${getStatusColor(client.statut)} text-xs`}>
+              {client.statut || "Actif"}
+            </Badge>
+          </div>
         </div>
       </div>
 
@@ -292,6 +324,17 @@ export function ClientDetailView({
                 {mandats.length}
               </Badge>
             </button>
+            <button
+              onClick={() => setActiveTab("notes")}
+              className={`flex items-center gap-2 py-2 px-1 border-b-2 font-medium text-sm transition-colors ${
+                activeTab === "notes"
+                  ? "border-gray-900 text-gray-900"
+                  : "border-transparent text-gray-500 hover:text-gray-700"
+              }`}
+            >
+              <MessageSquare className="h-4 w-4" />
+              Notes
+            </button>
           </nav>
         </div>
 
@@ -299,6 +342,12 @@ export function ClientDetailView({
         <div className="max-w-7xl mx-auto">
           {activeTab === "overview" && renderOverview()}
           {activeTab === "mandats" && renderMandats()}
+          {activeTab === "notes" && (
+            <ContactNotes 
+              contactId={client.id} 
+              contactName={client.nom} 
+            />
+          )}
         </div>
       </div>
     </div>

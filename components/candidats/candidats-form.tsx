@@ -7,16 +7,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Field } from "@/components/ui/field";
-import { CreateCandidatData, Candidat } from "@/types/client";
+import { CreateCandidatData, Candidat } from "@/types/candidat";
 import { cn } from "@/lib/utils";
 
 // Schéma de validation Zod
 const candidatschema = z.object({
   nom: z.string().min(1, "Le nom est requis").max(255, "Le nom est trop long"),
-  secteur_activite: z
-    .string()
-    .max(255, "Secteur d'activité trop long")
-    .optional(),
+  prenom: z.string().min(1, "Le prénom est requis").max(255, "Le prénom est trop long"),
   adresse: z.string().optional(),
   ville: z.string().max(100, "Nom de ville trop long").optional(),
   code_postal: z.string().max(10, "Code postal trop long").optional(),
@@ -31,23 +28,14 @@ const candidatschema = z.object({
         message: "Email invalide",
       }
     ),
-  site_web: z
-    .string()
-    .optional()
-    .refine(
-      (val) => !val || val === "" || z.string().url().safeParse(val).success,
-      {
-        message: "URL invalide",
-      }
-    ),
-  contact_principal: z.string().max(255, "Nom du contact trop long").optional(),
-  notes: z.string().optional(),
-  statut: z.enum(["actif", "inactif", "prospect"]),
+  specialisation: z.string().max(255, "Spécialisation trop longue").optional(),
+  niveau_experience: z.string().max(100, "Niveau d'expérience trop long").optional(),
+  statut: z.string(),
 });
 
-type ClientFormData = z.infer<typeof candidatschema>;
+type CandidatFormData = z.infer<typeof candidatschema>;
 
-interface ClientFormProps {
+interface CandidatFormProps {
   isOpen: boolean;
   onToggle: () => void;
   onSubmit: (data: CreateCandidatData) => Promise<void>;
@@ -63,7 +51,7 @@ export function CandidatForm({
   loading = false,
   candidat,
   mode = "create",
-}: ClientFormProps) {
+}: CandidatFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const {
@@ -71,26 +59,27 @@ export function CandidatForm({
     handleSubmit,
     reset,
     formState: { errors, isValid },
-  } = useForm<ClientFormData>({
+  } = useForm<CandidatFormData>({
     resolver: zodResolver(candidatschema),
     defaultValues: candidat
       ? {
           nom: candidat.nom,
-          secteur_activite: candidat.secteur_activite || "",
+          prenom: candidat.prenom,
           adresse: candidat.adresse || "",
           ville: candidat.ville || "",
           code_postal: candidat.code_postal || "",
           pays: candidat.pays || "",
           telephone: candidat.telephone || "",
           email: candidat.email || "",
-          site_web: candidat.site_web || "",
-          contact_principal: candidat.contact_principal || "",
-          notes: candidat.notes || "",
-          statut: candidat.statut || "prospect",
+          specialisation: candidat.specialisation || "",
+          niveau_experience: candidat.niveau_experience || "",
+          statut: candidat.statut,
         }
       : {
+          nom: "",
+          prenom: "",
           pays: "France",
-          statut: "prospect",
+          statut: "actif",
         },
     mode: "onChange", // Validation en temps réel
   });
@@ -100,48 +89,43 @@ export function CandidatForm({
     if (candidat) {
       reset({
         nom: candidat.nom,
-        secteur_activite: candidat.secteur_activite || "",
+        prenom: candidat.prenom,
         adresse: candidat.adresse || "",
         ville: candidat.ville || "",
         code_postal: candidat.code_postal || "",
         pays: candidat.pays || "",
         telephone: candidat.telephone || "",
         email: candidat.email || "",
-        site_web: candidat.site_web || "",
-        contact_principal: candidat.contact_principal || "",
-        notes: candidat.notes || "",
-        statut: candidat.statut || "prospect",
+        specialisation: candidat.specialisation || "",
+        niveau_experience: candidat.niveau_experience || "",
+        statut: candidat.statut,
       });
     } else {
       reset({
         nom: "",
-        secteur_activite: "",
+        prenom: "",
         adresse: "",
         ville: "",
         code_postal: "",
         pays: "France",
         telephone: "",
         email: "",
-        site_web: "",
-        contact_principal: "",
-        notes: "",
-        statut: "prospect",
+        specialisation: "",
+        niveau_experience: "",
+        statut: "actif",
       });
     }
   }, [candidat, reset]);
 
-  const handleFormSubmit: SubmitHandler<ClientFormData> = async (data) => {
+  const handleFormSubmit: SubmitHandler<CandidatFormData> = async (data) => {
     try {
       setIsSubmitting(true);
 
       // Créer les données pour CreateCandidatData
       const cleanData: CreateCandidatData = {
         nom: data.nom,
+        prenom: data.prenom,
         statut: data.statut,
-        ...(data.secteur_activite &&
-          data.secteur_activite !== "" && {
-            secteur_activite: data.secteur_activite,
-          }),
         ...(data.adresse && data.adresse !== "" && { adresse: data.adresse }),
         ...(data.ville && data.ville !== "" && { ville: data.ville }),
         ...(data.code_postal &&
@@ -150,13 +134,10 @@ export function CandidatForm({
         ...(data.telephone &&
           data.telephone !== "" && { telephone: data.telephone }),
         ...(data.email && data.email !== "" && { email: data.email }),
-        ...(data.site_web &&
-          data.site_web !== "" && { site_web: data.site_web }),
-        ...(data.contact_principal &&
-          data.contact_principal !== "" && {
-            contact_principal: data.contact_principal,
-          }),
-        ...(data.notes && data.notes !== "" && { notes: data.notes }),
+        ...(data.specialisation &&
+          data.specialisation !== "" && { specialisation: data.specialisation }),
+        ...(data.niveau_experience &&
+          data.niveau_experience !== "" && { niveau_experience: data.niveau_experience }),
       };
 
       await onSubmit(cleanData);
@@ -191,15 +172,51 @@ export function CandidatForm({
             {/* Informations de base */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <Field error={errors.nom?.message}>
-                <Label htmlFor="nom">Nom de l&apos;entreprise *</Label>
+                <Label htmlFor="nom">Nom *</Label>
                 <Input
                   id="nom"
                   {...register("nom")}
-                  placeholder="Ex: Acme Corporation"
+                  placeholder="Ex: Dupont"
                   className={errors.nom ? "border-red-500" : ""}
                 />
               </Field>
 
+              <Field error={errors.prenom?.message}>
+                <Label htmlFor="prenom">Prénom *</Label>
+                <Input
+                  id="prenom"
+                  {...register("prenom")}
+                  placeholder="Ex: Jean"
+                  className={errors.prenom ? "border-red-500" : ""}
+                />
+              </Field>
+            </div>
+
+            {/* Spécialisation et expérience */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <Field error={errors.specialisation?.message}>
+                <Label htmlFor="specialisation">Spécialisation</Label>
+                <Input
+                  id="specialisation"
+                  {...register("specialisation")}
+                  placeholder="Ex: Développement web"
+                  className={errors.specialisation ? "border-red-500" : ""}
+                />
+              </Field>
+
+              <Field error={errors.niveau_experience?.message}>
+                <Label htmlFor="niveau_experience">Niveau d&apos;expérience</Label>
+                <Input
+                  id="niveau_experience"
+                  {...register("niveau_experience")}
+                  placeholder="Ex: Senior, Junior"
+                  className={errors.niveau_experience ? "border-red-500" : ""}
+                />
+              </Field>
+            </div>
+
+            {/* Statut */}
+            <div className="grid grid-cols-1 gap-6">
               <Field error={errors.statut?.message}>
                 <Label htmlFor="statut">Statut</Label>
                 <select
@@ -210,25 +227,11 @@ export function CandidatForm({
                     errors.statut && "border-red-500"
                   )}
                 >
-                  <option value="prospect">Prospect</option>
-                  <option value="actif">Client actif</option>
+                  <option value="actif">Actif</option>
                   <option value="inactif">Inactif</option>
+                  <option value="en_recherche">En recherche</option>
+                  <option value="place">Placé</option>
                 </select>
-              </Field>
-            </div>
-
-            {/* Secteur d'activité */}
-            <div className="grid grid-cols-1 gap-6">
-              <Field error={errors.secteur_activite?.message}>
-                <Label htmlFor="secteur_activite">
-                  Secteur d&apos;activité
-                </Label>
-                <Input
-                  id="secteur_activite"
-                  {...register("secteur_activite")}
-                  placeholder="Ex: Développement logiciel"
-                  className={errors.secteur_activite ? "border-red-500" : ""}
-                />
               </Field>
             </div>
 
@@ -263,16 +266,6 @@ export function CandidatForm({
                   className={errors.pays ? "border-red-500" : ""}
                 />
               </Field>
-
-              <Field error={errors.contact_principal?.message}>
-                <Label htmlFor="contact_principal">Contact principal</Label>
-                <Input
-                  id="contact_principal"
-                  {...register("contact_principal")}
-                  placeholder="Jean Dupont - Directeur RH"
-                  className={errors.contact_principal ? "border-red-500" : ""}
-                />
-              </Field>
             </div>
 
             {/* Contact */}
@@ -299,8 +292,8 @@ export function CandidatForm({
               </Field>
             </div>
 
-            {/* Adresse et site web */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Adresse */}
+            <div className="grid grid-cols-1 gap-6">
               <Field error={errors.adresse?.message}>
                 <Label htmlFor="adresse">Adresse</Label>
                 <Input
@@ -310,32 +303,7 @@ export function CandidatForm({
                   className={errors.adresse ? "border-red-500" : ""}
                 />
               </Field>
-
-              <Field error={errors.site_web?.message}>
-                <Label htmlFor="site_web">Site web</Label>
-                <Input
-                  id="site_web"
-                  {...register("site_web")}
-                  placeholder="https://www.entreprise.com"
-                  className={errors.site_web ? "border-red-500" : ""}
-                />
-              </Field>
             </div>
-
-            {/* Notes */}
-            <Field error={errors.notes?.message}>
-              <Label htmlFor="notes">Notes</Label>
-              <textarea
-                id="notes"
-                {...register("notes")}
-                rows={3}
-                className={cn(
-                  "w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 resize-none",
-                  errors.notes && "border-red-500"
-                )}
-                placeholder="Notes additionnelles..."
-              />
-            </Field>
 
             {/* Boutons d'action */}
             <div className="flex items-center gap-3 pt-4 border-t border-gray-100">

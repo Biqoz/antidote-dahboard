@@ -13,7 +13,29 @@ export interface Mandat {
   statut: "ouvert" | "en_cours" | "ferme" | "suspendu";
   priorite?: "basse" | "normale" | "haute";
   nombre_postes?: number;
-  notes?: string;
   created_at: string;
   updated_at: string;
+}
+
+export interface MandatNote {
+  id: string;
+  mandat_id: string;
+  titre?: string;
+  contenu: string;
+  type?: "generale" | "commercial" | "technique" | "suivi" | "candidature";
+  priorite?: "basse" | "normale" | "haute";
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CreateMandatNoteData {
+  mandat_id: string;
+  titre?: string;
+  contenu: string;
+  type?: "generale" | "commercial" | "technique" | "suivi" | "candidature";
+  priorite?: "basse" | "normale" | "haute";
+}
+
+export interface UpdateMandatNoteData extends Partial<CreateMandatNoteData> {
+  id: string;
 }

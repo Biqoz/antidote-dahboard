@@ -33,7 +33,7 @@ export function ClientList({
         </div>
         <h3 className="text-lg font-medium text-gray-900 mb-2">Aucun client</h3>
         <p className="text-gray-500 mb-4">
-          Commencez par ajouter votre premier client
+          Commencez par ajouter votre premier contact
         </p>
       </div>
     );

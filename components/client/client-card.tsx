@@ -1,4 +1,4 @@
-import { Building2, Edit, Trash2, Briefcase } from "lucide-react";
+import { Building2, Edit, Trash2, Briefcase, Phone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Client } from "@/types/client";
@@ -100,6 +100,28 @@ export function ClientCard({
             {mandatsCount} mandat{mandatsCount !== 1 ? "s" : ""}
           </span>
         </div>
+      </div>
+
+      {/* Informations de contact */}
+      <div className="mb-4 space-y-2">
+        {client.tel_fixe && (
+          <div className="flex items-center gap-2 text-sm text-gray-600">
+            <Phone className="h-3 w-3 text-gray-400" />
+            <span className="text-gray-500">Fixe:</span>
+            <span className="text-gray-900">
+              {client.tel_fixe}
+            </span>
+          </div>
+        )}
+        {client.tel_portable && (
+          <div className="flex items-center gap-2 text-sm text-gray-600">
+            <Phone className="h-3 w-3 text-gray-400" />
+            <span className="text-gray-500">Mobile:</span>
+            <span className="text-gray-900">
+              {client.tel_portable}
+            </span>
+          </div>
+        )}
       </div>
 
       {/* Actions */}

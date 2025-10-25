@@ -84,7 +84,7 @@ export function MandatAccordionCard({ mandat, onMandatSelect }: MandatAccordionC
                 {mandat.localisation && (
                   <div className="flex items-center gap-2 text-sm">
                     <MapPin className="h-4 w-4 text-gray-400" />
-                    <span className="text-gray-600">Localisation:</span>
+                    <span className="text-gray-600">Lieu:</span>
                     <span className="font-medium">{mandat.localisation}</span>
                   </div>
                 )}

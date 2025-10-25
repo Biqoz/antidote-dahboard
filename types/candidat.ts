@@ -94,7 +94,6 @@ export interface Formation {
   date_fin: string;
   lieu?: string;
   mention?: string;
-  notes?: string;
 }
 
 export interface LangueCompetence {
@@ -118,7 +117,6 @@ export interface Candidature {
   statut: string; // 'postule', 'preselectionne', 'entretien', 'retenu', 'refuse'
   date_candidature: string;
   date_derniere_action?: string;
-  notes_recruteur?: string;
   score_adequation?: number;
   etapes_recrutement?: EtapeRecrutement[];
 }
@@ -129,9 +127,16 @@ export interface EtapeRecrutement {
   statut: string; // 'en_attente', 'en_cours', 'termine', 'annule'
   date_prevue?: string;
   date_realisee?: string;
-  notes?: string;
   resultat?: string;
 }
 
 // Type pour la création d'un candidat (sans les champs auto-générés)
 export type CreateCandidatData = Omit<Candidat, "id" | "created_at" | "updated_at">;
+
+export interface CandidatStats {
+  total: number;
+  actifs: number;
+  en_recherche: number;
+  places: number;
+  inactifs: number;
+}

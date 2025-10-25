@@ -5,12 +5,13 @@ export interface Client {
   adresse?: string;
   ville?: string;
   code_postal?: string;
+  prefixe?: string;
   pays?: string;
-  telephone?: string;
+  tel_fixe?: string;
+  tel_portable?: string;
   email?: string;
   site_web?: string;
-  contact_principal?: string;
-  notes?: string;
+  contact_administratif?: string;
   statut?: "actif" | "inactif" | "prospect";
   created_at: string;
   updated_at: string;
@@ -23,12 +24,13 @@ export interface CreateClientData {
   adresse?: string;
   ville?: string;
   code_postal?: string;
+  prefixe?: string;
   pays?: string;
-  telephone?: string;
+  tel_fixe?: string;
+  tel_portable?: string;
   email?: string;
   site_web?: string;
-  contact_principal?: string;
-  notes?: string;
+  contact_administratif?: string;
 }
 
 export interface UpdateClientData extends Partial<CreateClientData> {
@@ -41,12 +43,13 @@ export interface ClientFormData {
   adresse?: string;
   ville?: string;
   code_postal?: string;
+  prefixe?: string;
   pays?: string;
-  telephone?: string;
+  tel_fixe?: string;
+  tel_portable?: string;
   email?: string;
   site_web?: string;
-  contact_principal?: string;
-  notes?: string;
+  contact_administratif?: string;
   statut?: "actif" | "inactif" | "prospect";
 }
 
@@ -55,6 +58,29 @@ export interface ClientFilters {
   secteur_activite?: string;
   statut?: string;
   ville?: string;
+}
+
+export interface ContactNote {
+  id: string;
+  contact_id: string;
+  titre?: string;
+  contenu: string;
+  type?: "generale" | "commercial" | "technique" | "suivi";
+  auteur?: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CreateContactNoteData {
+  contact_id: string;
+  titre?: string;
+  contenu: string;
+  type?: "generale" | "commercial" | "technique" | "suivi";
+  auteur?: string;
+}
+
+export interface UpdateContactNoteData extends Partial<CreateContactNoteData> {
+  id: string;
 }
 
 export interface ClientStats {

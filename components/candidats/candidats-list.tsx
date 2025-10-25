@@ -1,4 +1,4 @@
-import { Candidat } from "@/types/client";
+import { Candidat } from "@/types/candidat";
 import { CandidatCard } from "./candidats-card";
 
 interface CandidatListProps {

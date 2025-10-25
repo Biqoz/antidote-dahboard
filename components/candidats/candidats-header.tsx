@@ -1,10 +1,10 @@
 import { Building2, Plus, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Candidatstats } from "@/types/client";
+import { CandidatStats } from "@/types/candidat";
 
 interface CandidatHeaderProps {
   candidatsCount: number;
-  stats?: Candidatstats;
+  stats?: CandidatStats;
   onNewCandidat: () => void;
   isFormOpen?: boolean;
 }
@@ -23,16 +23,19 @@ export function CandidatHeader({
             <Building2 className="h-6 w-6 text-gray-700" />
           </div>
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">candidats</h1>
+            <h1 className="text-2xl font-bold text-gray-900">Contacts</h1>
             <div className="flex items-center gap-4 text-sm text-gray-600">
               <span>
-                {candidatsCount} client{candidatsCount > 1 ? "s" : ""} au total
+                {candidatsCount} candidat{candidatsCount > 1 ? "s" : ""} au total
               </span>
               {stats && (
                 <>
                   <span className="text-gray-600">{stats.actifs} actifs</span>
-                  <span className="text-gray-600">
-                    {stats.prospects} prospects
+                  <span className="text-green-600">
+                    {stats.en_recherche} en recherche
+                  </span>
+                  <span className="text-blue-600">
+                    {stats.places} placés
                   </span>
                   {stats.inactifs > 0 && (
                     <span className="text-gray-500">

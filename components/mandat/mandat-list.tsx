@@ -68,7 +68,7 @@ export function MandatList({
         <div className="grid grid-cols-12 gap-4 text-xs font-medium text-gray-600 uppercase tracking-wider">
           <div className="col-span-4">Mandat</div>
           <div className="col-span-2">Statut</div>
-          <div className="col-span-2">Localisation</div>
+          <div className="col-span-2">Lieu</div>
           <div className="col-span-2">Salaire</div>
           <div className="col-span-1">Créé le</div>
           <div className="col-span-1">Actions</div>
