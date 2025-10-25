@@ -1,4 +1,4 @@
-# Architecture du Dashboard Antidote
+# Architecture du Dashboard Group Optimal
 
 ## Vue d'ensemble
 

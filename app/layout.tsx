@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Antidote - Dashboard",
-  description: "Dasboard Antidote",
+  title: "Group Optimal - Dashboard",
+  description: "Dasboard Group Optimal",
 };
 
 export default function RootLayout({

@@ -3,8 +3,15 @@ export interface Mandat {
   entreprise_id: string;
   titre: string;
   description?: string;
-  type_contrat?: "determine" | "indetermine";
-  niveau_experience?: string;
+  type_contrat?: "cdi" | "cdd" | "stage" | "freelance" | "interim" | "apprentissage" | "alternance";
+  type_poste?: "temps_plein" | "temps_partiel" | "contrat" | "stage" | "benevolat";
+  niveau_experience?: "debutant" | "intermediaire" | "senior" | "directeur" | "cadre_dirigeant";
+  secteur_activite?: string;
+  taille_entreprise?: "startup" | "pme" | "eti" | "grande_entreprise" | "administration";
+  mode_travail?: "sur_site" | "hybride" | "teletravail";
+  niveau_etudes?: "sans_diplome" | "cap_bep" | "bac" | "bac_2" | "bac_3" | "bac_5" | "doctorat";
+  langues_requises?: string[];
+  avantages?: string[];
   salaire_min?: number;
   salaire_max?: number;
   localisation?: string;

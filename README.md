@@ -1,4 +1,4 @@
-# 🎯 Antidote Dashboard
+# 🎯 Group Optimal Dashboard
 
 > **Plateforme de gestion RH et recrutement nouvelle génération**
 
