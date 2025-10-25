@@ -13,33 +13,39 @@ Une solution complète et moderne pour optimiser vos processus de recrutement, g
 ## ✨ Fonctionnalités principales
 
 ### 🏢 **Gestion d'entreprise**
+
 - **Mandats de recrutement** : Création, suivi et gestion complète des postes à pourvoir
 - **Base clients** : Gestion centralisée des entreprises clientes et prospects
 - **Suivi des candidatures** : Pipeline de recrutement avec étapes personnalisables
 
 ### 👥 **Vivier de talents**
+
 - **Base de données candidats** : Profils détaillés avec CV, expériences et formations
 - **Analyse IA** : Scoring automatique et recommandations intelligentes
 - **Gestion des compétences** : Mapping des compétences techniques et linguistiques
 - **Reconnaissance de diplômes** : Suivi des autorisations et certifications
 
 ### 🔍 **Sourcing avancé**
-- **Chasse de têtes** : Outils de prospection active *(en développement)*
+
+- **Chasse de têtes** : Outils de prospection active _(en développement)_
 - **Candidatures WordPress** : Intégration avec votre site web
 - **Multi-canaux** : Centralisation des candidatures de toutes sources
 
 ### 📢 **Gestion des annonces**
+
 - **Publication WordPress** : Diffusion automatisée sur votre site
-- **LinkedIn Jobs** : Intégration LinkedIn *(en développement)*
+- **LinkedIn Jobs** : Intégration LinkedIn _(en développement)_
 - **Multi-plateformes** : Gestion centralisée de vos annonces
 
 ### 🔍 **Veille stratégique**
-- **Veille candidats** : Monitoring des profils et prospects *(en développement)*
-- **Veille talents** : Analyse du marché des compétences *(en développement)*
-- **Veille concurrentielle** : Surveillance de la concurrence *(en développement)*
+
+- **Veille candidats** : Monitoring des profils et prospects _(en développement)_
+- **Veille talents** : Analyse du marché des compétences _(en développement)_
+- **Veille concurrentielle** : Surveillance de la concurrence _(en développement)_
 
 ### 🤖 **Intelligence artificielle**
-- **Assistant RH** : Chatbot intelligent pour automatiser les tâches *(en développement)*
+
+- **Assistant RH** : Chatbot intelligent pour automatiser les tâches _(en développement)_
 - **Analyse de CV** : Extraction automatique des informations
 - **Matching intelligent** : Correspondance candidat-poste optimisée
 - **Recommandations** : Suggestions personnalisées basées sur l'IA
@@ -47,19 +53,22 @@ Une solution complète et moderne pour optimiser vos processus de recrutement, g
 ## 🚀 Démarrage rapide
 
 ### Prérequis
-- Node.js 18+ 
+
+- Node.js 18+
 - npm, yarn, pnpm ou bun
 - Compte Supabase configuré
 
 ### Installation
 
 1. **Cloner le projet**
+
 ```bash
 git clone https://github.com/votre-username/dashboard-antidote.git
 cd dashboard-antidote
 ```
 
 2. **Installer les dépendances**
+
 ```bash
 npm install
 # ou
@@ -69,17 +78,20 @@ pnpm install
 ```
 
 3. **Configuration de l'environnement**
+
 ```bash
 cp .env.example .env.local
 ```
 
 Configurez vos variables d'environnement :
+
 ```env
 NEXT_PUBLIC_SUPABASE_URL=votre_url_supabase
 NEXT_PUBLIC_SUPABASE_ANON_KEY=votre_clé_publique_supabase
 ```
 
 4. **Lancer le serveur de développement**
+
 ```bash
 npm run dev
 # ou
@@ -89,11 +101,12 @@ pnpm dev
 ```
 
 5. **Accéder à l'application**
-Ouvrez [http://localhost:3000](http://localhost:3000) dans votre navigateur.
+   Ouvrez [http://localhost:3000](http://localhost:3000) dans votre navigateur.
 
 ## 🏗️ Architecture technique
 
 ### Stack technologique
+
 - **Frontend** : Next.js 15 avec App Router
 - **UI/UX** : Tailwind CSS + Radix UI + Lucide Icons
 - **Backend** : Supabase (PostgreSQL + Auth + Storage)
@@ -102,6 +115,7 @@ Ouvrez [http://localhost:3000](http://localhost:3000) dans votre navigateur.
 - **TypeScript** : Typage strict pour une meilleure maintenabilité
 
 ### Structure du projet
+
 ```
 dashboard-antidote/
 ├── app/                    # Pages Next.js (App Router)
@@ -126,6 +140,7 @@ dashboard-antidote/
 ### Entités principales
 
 **Candidat**
+
 - Informations personnelles et contact
 - CV et documents associés
 - Expériences professionnelles et formations
@@ -134,11 +149,13 @@ dashboard-antidote/
 - Reconnaissance de diplômes et autorisations
 
 **Client**
+
 - Informations entreprise
 - Secteur d'activité et localisation
 - Contacts et statut (actif/prospect/inactif)
 
 **Mandat**
+
 - Détails du poste à pourvoir
 - Critères de sélection et compétences requises
 - Statut et priorité
@@ -176,42 +193,25 @@ npm run lint         # Vérification ESLint
 ## 🚀 Roadmap
 
 ### Phase 1 - ✅ Complétée
+
 - [x] Interface de base et navigation
 - [x] Gestion des candidats et clients
 - [x] Système de mandats
 - [x] Intégration Supabase
 
 ### Phase 2 - 🚧 En cours
+
 - [ ] Assistant IA conversationnel
 - [ ] Analyse avancée des CV
 - [ ] Intégration LinkedIn
 - [ ] Système de notifications
 
 ### Phase 3 - 📋 Planifiée
+
 - [ ] Module de veille stratégique
 - [ ] API publique
 - [ ] Application mobile
 - [ ] Intégrations tierces (ATS, SIRH)
-
-## 🤝 Contribution
-
-Les contributions sont les bienvenues ! Consultez notre [guide de contribution](CONTRIBUTING.md) pour plus d'informations.
-
-1. Fork le projet
-2. Créez votre branche (`git checkout -b feature/nouvelle-fonctionnalite`)
-3. Committez vos changements (`git commit -m 'Ajout nouvelle fonctionnalité'`)
-4. Push vers la branche (`git push origin feature/nouvelle-fonctionnalite`)
-5. Ouvrez une Pull Request
-
-## 📝 Licence
-
-Ce projet est sous licence [MIT](LICENSE).
-
-## 📞 Support
-
-- **Documentation** : [docs/](./docs/)
-- **Issues** : [GitHub Issues](https://github.com/votre-username/dashboard-antidote/issues)
-- **Email** : support@antidote.com
 
 ---
 
