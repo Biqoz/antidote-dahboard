@@ -4,6 +4,7 @@ import { useState } from "react";
 import { PageLayout } from "@/components/layout/page-layout";
 import { CandidatList } from "@/components/candidat/candidat-list";
 import { CandidatDetailView } from "@/components/candidat/candidat-detail-view";
+import { CandidatSearch } from "@/components/candidat/candidat-search";
 import { useCandidats } from "@/hooks/use-candidats";
 import { Candidat } from "@/types/candidat";
 import { Button } from "@/components/ui/button";
@@ -14,6 +15,8 @@ export default function CandidatsPage() {
   const [selectedCandidat, setSelectedCandidat] = useState<Candidat | null>(
     null
   );
+  const [filteredCandidats, setFilteredCandidats] = useState<Candidat[]>([]);
+  const [isSearchActive, setIsSearchActive] = useState(false);
 
   const breadcrumbs = [
     { label: "Dashboard RH", href: "/dashboard" },
@@ -28,7 +31,7 @@ export default function CandidatsPage() {
           <CandidatDetailView
             candidat={selectedCandidat}
             onBack={() => setSelectedCandidat(null)}
-            onEdit={(candidat) => {
+            onEdit={(candidat: Candidat) => {
               // TODO: Implement edit functionality
               console.log("Edit candidat:", candidat);
             }}
@@ -60,8 +63,17 @@ export default function CandidatsPage() {
           </div>
         )}
 
+        {/* Barre de recherche complète */}
+        {!loading && candidats.length > 0 && (
+          <CandidatSearch
+            candidats={candidats}
+            onFilteredCandidats={setFilteredCandidats}
+            onSearchStateChange={setIsSearchActive}
+          />
+        )}
+
         <CandidatList
-          candidats={candidats}
+          candidats={isSearchActive ? filteredCandidats : candidats}
           loading={loading}
           onCandidatSelect={setSelectedCandidat}
         />
