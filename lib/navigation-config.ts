@@ -92,13 +92,13 @@ export const navigationConfig: NavigationData = {
       ],
     },
     {
-      title: "Annonce",
-      url: "/dashboard/annonce",
+      title: "Annonces",
+      url: "/dashboard/annonces",
       icon: Megaphone,
       items: [
         {
           title: "WordPress",
-          url: "/dashboard/annonce/wordpress",
+          url: "/dashboard/annonces/wordpress",
           icon: Globe,
           description: "Annonces sur site WordPress",
         },

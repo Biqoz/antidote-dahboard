@@ -1,9 +1,17 @@
-import { User, MapPin, Briefcase, Eye } from "lucide-react";
+import { User, MapPin, Briefcase, Eye, Mail, Phone } from "lucide-react";
 import { LoadingState } from "@/components/shared/loading-state";
 import { EmptyState } from "@/components/shared/empty-state";
 import { Candidat } from "@/types/candidat";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 interface CandidatListProps {
   candidats: Candidat[];
@@ -69,75 +77,119 @@ export function CandidatList({
   };
 
   return (
-    <div className="space-y-4">
-      {candidats.map((candidat) => (
-        <div
-          key={candidat.id}
-          className="bg-white rounded-lg border border-gray-200 p-6 hover:shadow-md transition-shadow"
-        >
-          <div className="flex items-start justify-between">
-            <div className="flex-1">
-              <div className="flex items-center gap-3 mb-3">
-                <div className="p-2 bg-blue-50 rounded-lg">
-                  <User className="h-5 w-5 text-blue-600" />
-                </div>
-                <div>
-                  <h3 className="text-lg font-semibold text-gray-900">
-                    {candidat.prenom} {candidat.nom}
-                  </h3>
-                  <div className="flex items-center gap-4 text-sm text-gray-600 mt-1">
+    <div className="rounded-md border">
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>Candidat</TableHead>
+            <TableHead>Statut</TableHead>
+            <TableHead>Spécialisation</TableHead>
+            <TableHead>Contact</TableHead>
+            <TableHead>Expérience</TableHead>
+            <TableHead>Salaire</TableHead>
+            <TableHead className="text-right">Actions</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {candidats.map((candidat) => (
+            <TableRow key={candidat.id} className="hover:bg-gray-50">
+              <TableCell>
+                <div className="flex items-center gap-3">
+                  <div className="p-1.5 bg-blue-50 rounded-lg">
+                    <User className="h-4 w-4 text-blue-600" />
+                  </div>
+                  <div>
+                    <div className="font-medium text-gray-900">
+                      {candidat.prenom} {candidat.nom}
+                    </div>
                     {candidat.adresse && (
-                      <div className="flex items-center gap-1">
-                        <MapPin className="h-4 w-4" />
-                        <span>{candidat.adresse}</span>
-                      </div>
-                    )}
-                    {candidat.specialisation && (
-                      <div className="flex items-center gap-1">
-                        <Briefcase className="h-4 w-4" />
-                        <span>{candidat.specialisation}</span>
+                      <div className="flex items-center gap-1 text-xs text-gray-500">
+                        <MapPin className="h-3 w-3" />
+                        <span className="truncate max-w-[200px]">{candidat.adresse}</span>
                       </div>
                     )}
                   </div>
                 </div>
-              </div>
-
-              <div className="flex items-center gap-3">
+              </TableCell>
+              <TableCell>
                 <Badge
                   variant="outline"
                   className={getStatusColor(candidat.statut)}
                 >
                   {getStatusLabel(candidat.statut)}
                 </Badge>
-
-                {candidat.niveau_experience && (
-                  <Badge variant="secondary">
+              </TableCell>
+              <TableCell>
+                {candidat.specialisation ? (
+                  <div className="flex items-center gap-1">
+                    <Briefcase className="h-3.5 w-3.5 text-gray-400" />
+                    <span className="text-sm truncate max-w-[150px]">
+                      {candidat.specialisation}
+                    </span>
+                  </div>
+                ) : (
+                  <span className="text-gray-400 text-sm">Non définie</span>
+                )}
+              </TableCell>
+              <TableCell>
+                <div className="space-y-1">
+                  {candidat.email && (
+                    <div className="flex items-center gap-1">
+                      <Mail className="h-3.5 w-3.5 text-gray-400" />
+                      <a
+                        href={`mailto:${candidat.email}`}
+                        className="text-sm text-blue-600 hover:underline truncate max-w-[150px]"
+                      >
+                        {candidat.email}
+                      </a>
+                    </div>
+                  )}
+                  {candidat.telephone && (
+                    <div className="flex items-center gap-1">
+                      <Phone className="h-3.5 w-3.5 text-gray-400" />
+                      <a
+                        href={`tel:${candidat.telephone}`}
+                        className="text-sm text-blue-600 hover:underline"
+                      >
+                        {candidat.telephone}
+                      </a>
+                    </div>
+                  )}
+                </div>
+              </TableCell>
+              <TableCell>
+                {candidat.niveau_experience ? (
+                  <Badge variant="secondary" className="text-xs">
                     {candidat.niveau_experience}
                   </Badge>
+                ) : (
+                  <span className="text-gray-400 text-sm">Non défini</span>
                 )}
-
-                {candidat.salaire_souhaite && (
-                  <Badge variant="outline">
+              </TableCell>
+              <TableCell>
+                {candidat.salaire_souhaite ? (
+                  <span className="text-sm font-medium">
                     {candidat.salaire_souhaite.toLocaleString()}€
-                  </Badge>
+                  </span>
+                ) : (
+                  <span className="text-gray-400 text-sm">Non défini</span>
                 )}
-              </div>
-            </div>
-
-            <div className="flex items-center gap-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => onCandidatSelect?.(candidat)}
-                className="flex items-center gap-2"
-              >
-                <Eye className="h-4 w-4" />
-                Voir détails
-              </Button>
-            </div>
-          </div>
-        </div>
-      ))}
+              </TableCell>
+              <TableCell className="text-right">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => onCandidatSelect?.(candidat)}
+                  className="h-8 px-3"
+                >
+                  <Eye className="h-3.5 w-3.5 mr-1" />
+                  Voir
+                </Button>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
     </div>
   );
 }

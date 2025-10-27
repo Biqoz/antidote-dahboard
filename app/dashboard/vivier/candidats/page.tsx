@@ -2,82 +2,100 @@
 
 import { useState } from "react";
 import { PageLayout } from "@/components/layout/page-layout";
-import { CandidatList } from "@/components/candidat/candidat-list";
-import { CandidatDetailView } from "@/components/candidat/candidat-detail-view";
-import { CandidatSearch } from "@/components/candidat/candidat-search";
-import { useCandidats } from "@/hooks/use-candidats";
+import { ProfilsSidebar } from "@/components/candidat/profils-sidebar";
+import { ProfilsContent } from "@/components/candidat/profils-content";
+import { CandidatForm } from "@/components/candidats/candidats-form";
 import { Candidat } from "@/types/candidat";
-import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
+import { useCandidats } from "@/hooks/use-candidats";
 
 export default function CandidatsPage() {
-  const { candidats, loading, error } = useCandidats();
+  const [viewMode, setViewMode] = useState<"list" | "detail">("list");
   const [selectedCandidat, setSelectedCandidat] = useState<Candidat | null>(
     null
   );
-  const [filteredCandidats, setFilteredCandidats] = useState<Candidat[]>([]);
-  const [isSearchActive, setIsSearchActive] = useState(false);
+  const [activeSection, setActiveSection] = useState("vue-ensemble");
+  
+  // États pour les modales
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [candidatToEdit, setCandidatToEdit] = useState<Candidat | null>(null);
+  
+  const { updateCandidat } = useCandidats();
 
   const breadcrumbs = [
-    { label: "Dashboard RH", href: "/dashboard" },
-    { label: "Vivier de talents", href: "/dashboard/vivier" },
+    { label: "Dashboard", href: "/dashboard" },
+    { label: "Vivier", href: "/dashboard/vivier" },
     { label: "Candidats" },
   ];
 
-  if (selectedCandidat) {
-    return (
-      <PageLayout breadcrumbs={breadcrumbs}>
-        <div className="flex flex-1 flex-col p-4">
-          <CandidatDetailView
-            candidat={selectedCandidat}
-            onBack={() => setSelectedCandidat(null)}
-            onEdit={(candidat: Candidat) => {
-              // TODO: Implement edit functionality
-              console.log("Edit candidat:", candidat);
-            }}
-          />
-        </div>
-      </PageLayout>
-    );
-  }
+  const handleSectionChange = (section: string) => {
+    setActiveSection(section);
+  };
+
+  const handleProfilSelect = (candidat: Candidat) => {
+    setSelectedCandidat(candidat);
+    setViewMode("detail");
+    setActiveSection("vue-ensemble");
+  };
+
+  const handleBackToList = () => {
+    setViewMode("list");
+    setSelectedCandidat(null);
+  };
+
+  const handleEditCandidat = (candidat: Candidat) => {
+    setCandidatToEdit(candidat);
+    setIsEditModalOpen(true);
+  };
+
+  const handleEditSubmit = async (data: Partial<Candidat>) => {
+    if (candidatToEdit) {
+      try {
+        await updateCandidat(candidatToEdit.id, data);
+        setIsEditModalOpen(false);
+        setCandidatToEdit(null);
+      } catch (error) {
+        console.error("Erreur lors de la modification:", error);
+      }
+    }
+  };
 
   return (
     <PageLayout breadcrumbs={breadcrumbs}>
-      <div className="flex flex-1 flex-col gap-6 p-4">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl font-bold text-gray-900">Candidats</h1>
-            <p className="text-gray-600">
-              Gérez votre vivier de talents et candidats
-            </p>
-          </div>
-          <Button onClick={() => console.log("Ajouter candidat - à implémenter")}>
-            <Plus className="h-4 w-4 mr-2" />
-            Ajouter un candidat
-          </Button>
-        </div>
-
-        {error && (
-          <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-            <p className="text-red-600">Erreur: {error}</p>
-          </div>
-        )}
-
-        {/* Barre de recherche complète */}
-        {!loading && candidats.length > 0 && (
-          <CandidatSearch
-            candidats={candidats}
-            onFilteredCandidats={setFilteredCandidats}
-            onSearchStateChange={setIsSearchActive}
+      <div className="flex flex-1 h-full">
+        {/* Sidebar interne - seulement en mode détail */}
+        {viewMode === "detail" && (
+          <ProfilsSidebar
+            activeSection={activeSection}
+            onSectionChange={handleSectionChange}
+            candidatsCount={0}
+            className="flex-shrink-0"
+            onBackToList={handleBackToList}
           />
         )}
 
-        <CandidatList
-          candidats={isSearchActive ? filteredCandidats : candidats}
-          loading={loading}
-          onCandidatSelect={setSelectedCandidat}
+        {/* Contenu principal */}
+        <ProfilsContent
+          viewMode={viewMode}
+          activeSection={activeSection}
+          selectedProfil={selectedCandidat}
+          onProfilSelect={handleProfilSelect}
+          onBackToList={handleBackToList}
+          onEditCandidat={handleEditCandidat}
         />
       </div>
+      
+      {/* Modale de modification */}
+      {candidatToEdit && (
+        <CandidatForm
+          isOpen={isEditModalOpen}
+          onToggle={() => setIsEditModalOpen(!isEditModalOpen)}
+          onSubmit={handleEditSubmit}
+          candidat={candidatToEdit}
+          mode="edit"
+        />
+      )}
+
+
     </PageLayout>
   );
 }

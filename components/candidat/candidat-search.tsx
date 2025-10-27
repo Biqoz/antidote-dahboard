@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { Search, Filter, X } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -78,8 +78,9 @@ export function CandidatSearch({
       }
 
       // Recherche dans les compétences linguistiques
-      if (candidat.competences_linguistiques?.some(lang =>
-        containsWord(lang.langue, searchWord) || containsWord(lang.niveau, searchWord)
+      if (candidat.competences_linguistiques?.some(langue =>
+        containsWord(langue.langue, searchWord) ||
+        containsWord(langue.niveau, searchWord)
       )) {
         return true;
       }
@@ -109,10 +110,9 @@ export function CandidatSearch({
       }
 
       // Recherche dans les notes
-      if (candidat.notes?.some(note =>
+      if (candidat.profil_notes?.some((note: { contenu: string; type?: string }) =>
         containsWord(note.contenu, searchWord) ||
-        containsWord(note.type, searchWord) ||
-        containsWord(note.auteur, searchWord)
+        containsWord(note.type, searchWord)
       )) {
         return true;
       }
@@ -127,13 +127,14 @@ export function CandidatSearch({
         }
       }
 
-      // Recherche dans la reconnaissance diplôme
-      if (candidat.reconnaissance_diplome) {
-        const recoDiplome = candidat.reconnaissance_diplome;
-        if (containsWord(recoDiplome.pays_origine, searchWord) ||
-            containsWord(recoDiplome.organisme_reconnaissance, searchWord) ||
-            containsWord(recoDiplome.numero_autorisation, searchWord)) {
-          return true;
+      // Recherche dans les reconnaissances diplômes
+      if (candidat.reconnaissances_diplomes && candidat.reconnaissances_diplomes.length > 0) {
+        for (const recoDiplome of candidat.reconnaissances_diplomes) {
+          if (containsWord(recoDiplome.pays_origine, searchWord) ||
+              containsWord(recoDiplome.organisme_reconnaissance, searchWord) ||
+              containsWord(recoDiplome.numero_autorisation, searchWord)) {
+            return true;
+          }
         }
       }
 
@@ -141,7 +142,9 @@ export function CandidatSearch({
       if (candidat.source_motivation) {
         const motivation = candidat.source_motivation;
         if (containsWordInArray(motivation.motivations_principales, searchWord) ||
-            containsWord(motivation.objectifs_carriere, searchWord) ||
+            (typeof motivation.objectifs_carriere === 'string' 
+              ? containsWord(motivation.objectifs_carriere, searchWord)
+              : containsWordInArray(motivation.objectifs_carriere, searchWord)) ||
             containsWordInArray(motivation.preferences_travail, searchWord) ||
             containsWordInArray(motivation.zones_mobilite, searchWord)) {
           return true;
@@ -176,7 +179,7 @@ export function CandidatSearch({
   }, [candidats, searchTerm, statusFilter, experienceFilter]);
 
   // Mettre à jour les candidats filtrés
-  useMemo(() => {
+  useEffect(() => {
     onFilteredCandidats(filteredCandidats);
     
     // Signaler si une recherche est active

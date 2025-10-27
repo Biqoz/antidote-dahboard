@@ -6,13 +6,11 @@ import { Mail, Phone, ArrowLeft } from "lucide-react";
 interface CandidatDetailHeaderProps {
   candidat: Candidat;
   onBack: () => void;
-  onEdit?: (candidat: Candidat) => void;
 }
 
 export function CandidatDetailHeader({
   candidat,
   onBack,
-  onEdit,
 }: CandidatDetailHeaderProps) {
   return (
     <div className="flex items-center justify-between">
@@ -41,7 +39,6 @@ export function CandidatDetailHeader({
           </div>
         </div>
       </div>
-      <Button onClick={() => onEdit?.(candidat)}>Modifier</Button>
     </div>
   );
 }

@@ -1,7 +1,14 @@
+export { VueEnsembleTab } from "./vue-ensemble-tab";
 export { CvTab } from "./cv-tab";
-export { JobsTab } from "./jobs-tab";
 export { ExperienceTab } from "./experience-tab";
 export { FormationTab } from "./formation-tab";
 export { CompetencesTab } from "./competences-tab";
-export { AnalyseTab } from "./analyse-tab";
 export { DefaultTab } from "./default-tab";
+export { SpecialisationTab } from "./specialisation-tab";
+export { JobsCiblesTab } from "./jobs-cibles-tab";
+export { ReconnaissancesTab } from "./reconnaissances-tab";
+export { MotivationTab } from "./motivation-tab";
+export { CandidaturesTab } from "./candidatures-tab";
+export { NotesTab } from "./notes-tab";
+export { AnalyseTab } from "./analyse-tab";
+export { MemoireIATab } from "./memoire-ia-tab";

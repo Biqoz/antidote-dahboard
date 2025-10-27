@@ -1,34 +1,27 @@
 import React from "react";
 import { Candidat } from "@/types/candidat";
 import { CandidatDetailHeader } from "./detail/candidat-detail-header";
-import { CandidatDetailTabs } from "./detail/candidat-detail-tabs";
 import { CandidatTabContent } from "./detail/candidat-tab-content";
-import { useCandidatTabs } from "@/hooks/use-candidat-tabs";
+import { useCandidatTabs, TabType } from "@/hooks/use-candidat-tabs";
 
 interface CandidatDetailViewProps {
   candidat: Candidat;
   onBack: () => void;
-  onEdit?: (candidat: Candidat) => void;
+  initialTab?: string;
 }
 
 export function CandidatDetailView({
   candidat,
   onBack,
-  onEdit,
+  initialTab,
 }: CandidatDetailViewProps) {
-  const { activeTab, handleTabChange } = useCandidatTabs();
+  const { activeTab } = useCandidatTabs(initialTab as TabType);
 
   return (
     <div className="space-y-6">
       <CandidatDetailHeader
         candidat={candidat}
         onBack={onBack}
-        onEdit={onEdit}
-      />
-      
-      <CandidatDetailTabs
-        activeTab={activeTab}
-        onTabChange={handleTabChange}
       />
       
       <CandidatTabContent

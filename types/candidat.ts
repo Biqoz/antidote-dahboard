@@ -8,7 +8,11 @@ export interface Candidat {
   ville?: string;
   code_postal?: string;
   pays?: string;
+  // Anciens champs simples (gardés pour compatibilité)
   specialisation?: string;
+  
+  // Nouveaux champs multi-éléments
+  specialisations?: SpecialisationItem[];
   niveau_experience?: string;
   salaire_souhaite?: number;
   disponibilite?: string;
@@ -25,41 +29,31 @@ export interface Candidat {
   // Formation
   formations?: Formation[];
 
-  // Compétences
-  competences?: string[];
-  competences_techniques?: string[];
-  competences_linguistiques?: LangueCompetence[];
+  // Compétences (JSONB dans la DB)
+  competences?: string[]; // JSONB array
+  competences_techniques?: string[]; // JSONB array
+  competences_linguistiques?: LangueCompetence[]; // JSONB array
 
-  // Analyse IA
-  analyse_ia?: {
-    score_global?: number;
-    points_forts?: string[];
-    points_amelioration?: string[];
-    recommandations?: string[];
-    derniere_analyse?: string;
-  };
+  // Analyse IA (JSONB dans la DB)
+  analyse_ia?: AnalyseIA;
 
-  // Reconnaissance diplôme / Autorisation
-  reconnaissance_diplome?: {
-    pays_origine?: string;
-    diplome_reconnu?: boolean;
-    organisme_reconnaissance?: string;
-    date_reconnaissance?: string;
-    numero_autorisation?: string;
-    validite_autorisation?: string;
-  };
+  // Reconnaissances diplômes / Autorisations (JSONB dans la DB)
+  reconnaissances_diplomes?: ReconnaissanceDiplome[];
 
-  // Source de motivation
-  source_motivation?: {
-    motivations_principales?: string[];
-    objectifs_carriere?: string;
-    preferences_travail?: string[];
-    mobilite_geographique?: boolean;
-    zones_mobilite?: string[];
-  };
+  // Source et motivation (JSONB dans la DB)
+  source_motivation?: SourceMotivation;
+  motivations?: MotivationItem[];
 
-  // Notes et suivi
-  notes?: Note[];
+  // Jobs ciblés (JSONB dans la DB)
+  jobs_cibles?: string[];
+
+  // Mémoire IA (JSONB dans la DB)
+  memoire_ia?: MemoireIA;
+  interactions_ia?: InteractionIA[];
+  notes_profil?: NoteItem[];
+
+  // Notes (relation avec profil_notes)
+  profil_notes?: Note[];
 
   // Candidatures
   candidatures?: Candidature[];
@@ -103,22 +97,62 @@ export interface LangueCompetence {
 }
 
 export interface Note {
-  id?: string;
+  id: string;
+  profil_id: string;
   contenu: string;
-  type?: string; // 'entretien', 'suivi', 'remarque'
-  date: string;
-  auteur?: string;
+  type?: string; // 'remarque' par défaut
+  created_at: string;
 }
 
 export interface Candidature {
-  id?: string;
+  id: string;
+  profil_id: string;
   mandat_id: string;
-  candidat_id: string;
-  statut: string; // 'postule', 'preselectionne', 'entretien', 'retenu', 'refuse'
+  statut: 'postule' | 'preselectionne' | 'entretien' | 'retenu' | 'refuse' | 'retire';
   date_candidature: string;
   date_derniere_action?: string;
   score_adequation?: number;
+  notes?: string;
+  created_at: string;
+  updated_at: string;
+  created_by?: string;
+  updated_by?: string;
   etapes_recrutement?: EtapeRecrutement[];
+  // Relations
+  profils?: {
+    nom: string;
+    prenom: string;
+    email?: string;
+    specialisation?: string;
+    telephone?: string;
+  };
+  mandat?: {
+    id: string;
+    titre: string;
+    entreprise_id: string;
+    statut?: string;
+  };
+  mandats?: {
+    titre: string;
+    entreprise_id: string;
+    statut?: string;
+  };
+}
+
+export interface CreateCandidatureData {
+  profil_id: string;
+  mandat_id: string;
+  statut?: 'postule' | 'preselectionne' | 'entretien' | 'retenu' | 'refuse' | 'retire';
+  score_adequation?: number;
+  notes?: string;
+}
+
+export interface UpdateCandidatureData {
+  id: string;
+  statut?: 'postule' | 'preselectionne' | 'entretien' | 'retenu' | 'refuse' | 'retire';
+  score_adequation?: number;
+  notes?: string;
+  date_derniere_action?: string;
 }
 
 export interface EtapeRecrutement {
@@ -139,4 +173,132 @@ export interface CandidatStats {
   en_recherche: number;
   places: number;
   inactifs: number;
+}
+
+// Interfaces pour les champs JSONB
+export interface AnalyseIA {
+  score_global?: number;
+  competences_detectees?: string[];
+  points_forts?: string[];
+  points_amelioration?: string[];
+  recommandations?: string[];
+  derniere_analyse?: string;
+}
+
+export interface ReconnaissanceDiplome {
+  statut?: 'reconnu' | 'en_cours' | 'non_reconnu' | 'non_applicable';
+  organisme?: string;
+  organisme_reconnaissance?: string;
+  date_reconnaissance?: string;
+  equivalence?: string;
+  documents_requis?: string[];
+  notes?: string;
+  pays_origine?: string;
+  numero_autorisation?: string;
+}
+
+export interface SourceMotivation {
+  source?: string;
+  canal_acquisition?: string;
+  motivation_principale?: string;
+  motivations_principales?: string[];
+  objectifs_carriere?: string | string[];
+  preferences_poste?: {
+    type_contrat?: string;
+    localisation?: string[];
+    secteur_prefere?: string[];
+    salaire_min?: number;
+    salaire_max?: number;
+  };
+  preferences_travail?: string[];
+  zones_mobilite?: string[];
+}
+
+export interface MemoireIA {
+  contenu?: string;
+  interactions?: {
+    date: string;
+    type: string;
+    description: string;
+  }[];
+  preferences_utilisateur?: Record<string, unknown>;
+  historique_modifications?: {
+    date: string;
+    champ: string;
+    ancienne_valeur?: unknown;
+    nouvelle_valeur?: unknown;
+  }[];
+  notes_ia?: string[];
+  derniere_mise_a_jour?: string;
+}
+
+// Nouvelles interfaces pour les structures multi-éléments
+export interface MotivationItem {
+  id: string;
+  titre: string;
+  description: string;
+  priorite?: 'haute' | 'moyenne' | 'basse';
+  date_creation: string;
+  updated_at: string;
+}
+
+export interface SpecialisationItem {
+  id: string;
+  nom: string;
+  niveau: 'debutant' | 'intermediaire' | 'avance' | 'expert';
+  domaine: string;
+  certifie: boolean;
+  organisme_certification?: string;
+  date_obtention?: string;
+  date_expiration?: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface ReconnaissanceItem {
+  id: string;
+  diplome: string;
+  organisme_delivrance: string;
+  organisme_reconnaissance: string;
+  statut: 'en_cours' | 'reconnu' | 'refuse' | 'partiel';
+  date_obtention?: string;
+  date_reconnaissance?: string;
+  pays_obtention: string;
+  equivalence?: string;
+  date_creation: string;
+}
+
+export interface NoteItem {
+  id: string;
+  titre: string;
+  contenu: string;
+  categorie: 'general' | 'entretien' | 'competences' | 'suivi' | 'motivation' | 'administratif';
+  priorite: 'haute' | 'normale' | 'basse' | 'urgente';
+  date_creation: string;
+  date_modification: string;
+}
+
+export interface InteractionIA {
+  id: string;
+  type: 'conversation' | 'analyse' | 'recommandation' | 'evaluation' | 'formation';
+  contenu: string;
+  reponse_ia: string;
+  contexte?: string;
+  score_pertinence: number;
+  date_interaction: string;
+}
+
+// Interface pour les candidatures WordPress
+export interface CandidatureWP {
+  id: string;
+  "Job Title"?: string;
+  "Nom"?: string;
+  "Prénom"?: string;
+  "Email"?: string;
+  "Numéro de téléphone"?: number;
+  "Votre CV"?: string;
+  "Commentaire"?: string;
+  "GDPR"?: string;
+  "Created At"?: string;
+  "Referrer"?: string;
 }

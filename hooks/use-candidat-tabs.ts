@@ -1,20 +1,27 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export type TabType =
+  | "vue-ensemble"
   | "cv"
-  | "jobs"
   | "experience"
   | "formation"
   | "competences"
   | "specialisation"
-  | "analyse"
-  | "reconnaissance"
+  | "jobs-cibles"
+  | "reconnaissances"
   | "motivation"
+  | "candidatures"
   | "notes"
-  | "candidatures";
+  | "analyse-ia"
+  | "memoire-ia";
 
-export function useCandidatTabs(initialTab: TabType = "cv") {
+export function useCandidatTabs(initialTab: TabType = "vue-ensemble") {
   const [activeTab, setActiveTab] = useState<TabType>(initialTab);
+
+  // Mettre à jour activeTab quand initialTab change (navigation sidebar)
+  useEffect(() => {
+    setActiveTab(initialTab);
+  }, [initialTab]);
 
   const handleTabChange = (tab: TabType) => {
     setActiveTab(tab);

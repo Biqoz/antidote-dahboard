@@ -1,11 +1,39 @@
 import { supabase } from "@/lib/supabase";
 import { Candidat } from "@/types/candidat";
+import { ProfilNotesService } from "./profil-notes-service";
+
+interface UpdateFormData {
+  notes?: string | string[];
+  competences?: string | string[];
+  [key: string]: unknown;
+}
 
 export class CandidatService {
   static async getAll(): Promise<Candidat[]> {
     const { data, error } = await supabase
       .from("profils")
-      .select("*")
+      .select(`
+        *,
+        candidatures (
+          id,
+          statut,
+          score_adequation,
+          notes,
+          mandat_id,
+          mandat:mandats (
+            id,
+            titre,
+            entreprise_id,
+            statut
+          )
+        ),
+        profil_notes (
+          id,
+          contenu,
+          type,
+          created_at
+        )
+      `)
       .order("created_at", { ascending: false });
 
     if (error) {
@@ -19,7 +47,28 @@ export class CandidatService {
   static async getById(id: string): Promise<Candidat | null> {
     const { data, error } = await supabase
       .from("profils")
-      .select("*")
+      .select(`
+        *,
+        candidatures (
+          id,
+          statut,
+          score_adequation,
+          notes,
+          mandat_id,
+          mandat:mandats (
+            id,
+            titre,
+            entreprise_id,
+            statut
+          )
+        ),
+        profil_notes (
+          id,
+          contenu,
+          type,
+          created_at
+        )
+      `)
       .eq("id", id)
       .single();
 
@@ -65,6 +114,40 @@ export class CandidatService {
     }
 
     return data;
+  }
+
+  static async updateWithNotes(
+    id: string,
+    formData: UpdateFormData
+  ): Promise<Candidat> {
+    // Séparer les notes du reste des données
+    const { notes, competences, ...profilData } = formData;
+
+    // Convertir les compétences en tableau si c'est une chaîne
+    if (competences && typeof competences === 'string') {
+      profilData.competences = competences
+        .split(',')
+        .map((comp: string) => comp.trim())
+        .filter((comp: string) => comp !== '');
+    }
+
+    // Mettre à jour le profil
+    const updatedProfil = await this.update(id, profilData);
+
+    // Gérer les notes si elles sont fournies
+    if (notes && typeof notes === 'string' && notes.trim() !== '') {
+      const notesArray = notes
+        .split('\n')
+        .map((note: string) => note.trim())
+        .filter((note: string) => note !== '');
+      
+      if (notesArray.length > 0) {
+        await ProfilNotesService.createMultiple(id, notesArray);
+      }
+    }
+
+    // Retourner le profil mis à jour avec les notes
+    return await this.getById(id) || updatedProfil;
   }
 
   static async delete(id: string): Promise<void> {
