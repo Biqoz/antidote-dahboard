@@ -90,7 +90,7 @@ export function ClientDetailView({
                 Téléphone
               </span>
             </div>
-            <p className="text-sm text-gray-900">{client.telephone || "N/A"}</p>
+            <p className="text-sm text-gray-900">{client.tel_fixe || client.tel_portable || "N/A"}</p>
           </div>
 
           <div className="bg-gray-50 rounded-lg p-3">
