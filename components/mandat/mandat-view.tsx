@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { MandatHeader } from "./mandat-header";
-import { MandatForm } from "./mandat-form";
+import { MandatForm, type MandatFormData } from "./mandat-form";
 import { MandatCard } from "./mandat-card";
 import { useAllMandats } from "@/hooks/use-all-mandats";
 import { Mandat } from "@/types/mandat";
@@ -10,21 +10,6 @@ interface MandatViewProps {
   onMandatSelect: (mandat: Mandat) => void;
   initialFormOpen?: boolean;
   preSelectedClientId?: string;
-}
-
-interface MandatFormData {
-  titre: string;
-  entreprise_id: string;
-  description?: string;
-  type_contrat?: "determine" | "indetermine";
-  niveau_experience?: string;
-  statut: "ouvert" | "en_cours" | "ferme" | "suspendu";
-  salaire_min?: number;
-  salaire_max?: number;
-  localisation?: string;
-  date_debut?: string;
-  priorite?: "basse" | "normale" | "haute";
-  nombre_postes?: number;
 }
 
 export function MandatView({

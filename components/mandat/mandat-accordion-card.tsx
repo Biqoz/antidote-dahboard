@@ -1,7 +1,15 @@
 "use client";
 
 import { useState } from "react";
-import { Briefcase, MapPin, Euro, ChevronDown, ChevronUp, Calendar, ExternalLink } from "lucide-react";
+import {
+  Briefcase,
+  MapPin,
+  Euro,
+  ChevronDown,
+  ChevronUp,
+  Calendar,
+  ExternalLink,
+} from "lucide-react";
 import { Mandat } from "@/types/mandat";
 import { MandatStatus } from "./mandat-status";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
@@ -12,7 +20,10 @@ interface MandatAccordionCardProps {
   onMandatSelect?: (mandat: Mandat) => void;
 }
 
-export function MandatAccordionCard({ mandat, onMandatSelect }: MandatAccordionCardProps) {
+export function MandatAccordionCard({
+  mandat,
+  onMandatSelect,
+}: MandatAccordionCardProps) {
   const [isExpanded, setIsExpanded] = useState(false);
 
   const formatSalaire = (min?: number, max?: number) => {
@@ -25,7 +36,7 @@ export function MandatAccordionCard({ mandat, onMandatSelect }: MandatAccordionC
 
   return (
     <Card className="overflow-hidden">
-      <CardHeader 
+      <CardHeader
         className="cursor-pointer hover:bg-gray-50 transition-colors"
         onClick={() => setIsExpanded(!isExpanded)}
       >
@@ -40,12 +51,14 @@ export function MandatAccordionCard({ mandat, onMandatSelect }: MandatAccordionC
               </h3>
               {mandat.type_contrat && (
                 <p className="text-sm text-gray-500">
-                  {mandat.type_contrat === "determine" ? "Déterminé" : "Indéterminé"}
+                  {mandat.type_contrat === "determine"
+                    ? "Déterminé"
+                    : "Indéterminé"}
                 </p>
               )}
             </div>
           </div>
-          
+
           <div className="flex items-center gap-3">
             <MandatStatus statut={mandat.statut} />
             {isExpanded ? (
@@ -80,7 +93,7 @@ export function MandatAccordionCard({ mandat, onMandatSelect }: MandatAccordionC
                     {formatSalaire(mandat.salaire_min, mandat.salaire_max)}
                   </span>
                 </div>
-                
+
                 {mandat.localisation && (
                   <div className="flex items-center gap-2 text-sm">
                     <MapPin className="h-4 w-4 text-gray-400" />

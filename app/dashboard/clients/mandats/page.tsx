@@ -50,8 +50,8 @@ export default function MandatsPage() {
   };
 
   const handleNavigateToClient = (clientId: string) => {
-    // Naviguer vers la page des candidats avec le client sélectionné
-    router.push(`/dashboard/clients/candidats?clientId=${clientId}`);
+    // Naviguer vers la page des contacts avec le client sélectionné
+    router.push(`/dashboard/clients/contacts?clientId=${clientId}`);
   };
 
   const handleEdit = () => {

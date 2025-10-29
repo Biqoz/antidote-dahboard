@@ -24,7 +24,7 @@ export function ExperienceEditForm({
 }: ExperienceEditFormProps) {
   // Déterminer si on édite un élément spécifique ou on ajoute un nouveau
   const isEditingSpecific = editingItemId && editingItemId.startsWith('experience-');
-  const isAddingNew = editingItemId === 'experience-new';
+  const isAddingNew = editingItemId === 'new-experience' || editingItemId === 'experience-new';
   const editingIndex = isEditingSpecific && !isAddingNew ? parseInt(editingItemId.split('-')[1]) : -1;
 
   // État pour l'élément en cours d'édition

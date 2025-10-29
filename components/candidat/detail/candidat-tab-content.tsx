@@ -2,17 +2,14 @@ import React, { useState } from "react";
 import { Candidat } from "@/types/candidat";
 import { TabType } from "@/hooks/use-candidat-tabs";
 import { useCandidatData } from "@/hooks/use-candidat-data";
-import { Button } from "@/components/ui/button";
-import { Edit, Plus } from "lucide-react";
+
 import {
   VueEnsembleTab,
   CvTab,
-  ExperienceTab,
   FormationTab,
   CompetencesTab,
   SpecialisationTab,
   JobsCiblesTab,
-  ReconnaissancesTab,
   MotivationTab,
   CandidaturesTab,
   NotesTab,
@@ -24,10 +21,10 @@ import {
   CvEditForm,
   ExperienceEditForm,
   FormationEditForm,
+  ReconnaissancesEditForm,
   CompetencesEditForm,
   SpecialisationEditForm,
   JobsCiblesEditForm,
-  ReconnaissancesEditForm,
   MotivationEditForm,
   CandidaturesEditForm,
   NotesEditForm,
@@ -46,7 +43,8 @@ export function CandidatTabContent({
 }: CandidatTabContentProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [editingItemId, setEditingItemId] = useState<string | null>(null);
-  const { candidat, updateField, refreshCandidat, isLoading } = useCandidatData(initialCandidat);
+  const { candidat, updateField, refreshCandidat } =
+    useCandidatData(initialCandidat);
 
   const handleEditSuccess = async () => {
     setIsEditing(false);
@@ -65,55 +63,24 @@ export function CandidatTabContent({
     setIsEditing(true);
   };
 
-  const handleAddNew = () => {
-    // Définir l'ID d'édition selon l'onglet actif
-    if (activeTab === 'specialisation') {
-      setEditingItemId('specialisation-new');
-    } else if (activeTab === 'experience') {
-      setEditingItemId('experience-new');
-    } else if (activeTab === 'formation') {
-      setEditingItemId('formation-new');
-    } else if (activeTab === 'competences') {
-      setEditingItemId('competences-new');
-    } else if (activeTab === 'jobs-cibles') {
-      setEditingItemId('jobs-cibles-new');
-    } else if (activeTab === 'reconnaissances') {
-      setEditingItemId('reconnaissances-new');
-    } else if (activeTab === 'motivation') {
-      setEditingItemId('motivation-new');
-    } else {
-      setEditingItemId(null);
-    }
-    setIsEditing(true);
-  };
-
-  // Détermine si l'onglet supporte l'ajout multiple
-  const isMultiAddTab = () => {
-    return ['experience', 'formation', 'competences', 'specialisation', 'jobs-cibles', 'reconnaissances', 'candidatures', 'analyse-ia'].includes(activeTab);
-  };
-
   const getTabTitle = () => {
     switch (activeTab) {
       case "vue-ensemble":
         return "Informations générales";
       case "cv":
-        return "CV";
-      case "experience":
-        return "Expériences";
+        return "CV & Expériences";
       case "formation":
-        return "Formations";
+        return "Formation";
       case "competences":
         return "Compétences";
       case "specialisation":
         return "Spécialisations";
       case "jobs-cibles":
         return "Jobs ciblés";
-      case "reconnaissances":
-        return "Reconnaissances";
       case "motivation":
-        return "Motivation";
+        return "Motivations";
       case "candidatures":
-        return "Candidatures";
+        return "Candidature";
       case "notes":
         return "Notes";
       case "analyse-ia":
@@ -138,9 +105,7 @@ export function CandidatTabContent({
       case "vue-ensemble":
         return <VueEnsembleTab candidat={candidat} />;
       case "cv":
-        return <CvTab candidat={candidat} />;
-      case "experience":
-        return <ExperienceTab {...commonProps} />;
+        return <CvTab {...commonProps} />;
       case "formation":
         return <FormationTab {...commonProps} />;
       case "competences":
@@ -149,10 +114,9 @@ export function CandidatTabContent({
         return <SpecialisationTab {...commonProps} />;
       case "jobs-cibles":
         return <JobsCiblesTab {...commonProps} />;
-      case "reconnaissances":
-        return <ReconnaissancesTab {...commonProps} />;
+
       case "motivation":
-        return <MotivationTab candidat={candidat} />;
+        return <MotivationTab {...commonProps} />;
       case "candidatures":
         return <CandidaturesTab {...commonProps} />;
       case "notes":
@@ -178,6 +142,19 @@ export function CandidatTabContent({
           />
         );
       case "cv":
+        // Si on édite une expérience dans l'onglet CV, afficher le formulaire d'expérience
+        if (editingItemId && editingItemId.startsWith("experience-")) {
+          return (
+            <ExperienceEditForm
+              candidat={candidat}
+              onSuccess={handleEditSuccess}
+              onCancel={handleCancelEdit}
+              updateField={updateField}
+              editingItemId={editingItemId}
+            />
+          );
+        }
+        // Sinon, afficher le formulaire CV normal
         return (
           <CvEditForm
             candidat={candidat}
@@ -186,17 +163,21 @@ export function CandidatTabContent({
             updateField={updateField}
           />
         );
-      case "experience":
-        return (
-          <ExperienceEditForm
-            candidat={candidat}
-            onSuccess={handleEditSuccess}
-            onCancel={handleCancelEdit}
-            updateField={updateField}
-            editingItemId={editingItemId}
-          />
-        );
+
       case "formation":
+        // Si on édite une reconnaissance dans l'onglet formation, afficher le formulaire de reconnaissance
+        if (editingItemId && editingItemId.startsWith("reconnaissance-")) {
+          return (
+            <ReconnaissancesEditForm
+              candidat={candidat}
+              onSuccess={handleEditSuccess}
+              onCancel={handleCancelEdit}
+              updateField={updateField}
+              editingItemId={editingItemId}
+            />
+          );
+        }
+        // Sinon, afficher le formulaire de formation
         return (
           <FormationEditForm
             candidat={candidat}
@@ -235,16 +216,7 @@ export function CandidatTabContent({
             updateField={updateField}
           />
         );
-      case "reconnaissances":
-        return (
-          <ReconnaissancesEditForm
-            candidat={candidat}
-            onSuccess={handleEditSuccess}
-            onCancel={handleCancelEdit}
-            updateField={updateField}
-            editingItemId={editingItemId}
-          />
-        );
+
       case "motivation":
         return (
           <MotivationEditForm
@@ -297,37 +269,50 @@ export function CandidatTabContent({
 
   return (
     <div className="space-y-4">
-      {/* Bouton modifier/ajouter spécifique à l'onglet */}
       <div className="flex justify-between items-center">
         <h2 className="text-lg font-semibold">{getTabTitle()}</h2>
-        <Button
-          onClick={() => isEditing ? handleCancelEdit() : (isMultiAddTab() ? handleAddNew() : setIsEditing(true))}
-          variant="outline"
-          className="flex items-center gap-2"
-          disabled={isLoading}
-        >
-          {isMultiAddTab() ? (
-            <>
-              <Plus className="h-4 w-4" />
-              {isEditing ? "Annuler" : `Ajouter ${getTabTitle().toLowerCase()}`}
-            </>
-          ) : (
-            <>
-              <Edit className="h-4 w-4" />
-              {isEditing ? "Annuler" : "Modifier"}
-            </>
-          )}
-        </Button>
       </div>
 
       {/* Formulaire d'édition spécifique à l'onglet */}
       {isEditing && (
         <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
           <h3 className="text-lg font-semibold text-blue-900 mb-4">
-            {editingItemId 
-              ? `Modifier ${getTabTitle().toLowerCase().slice(0, -1)}` // Enlever le 's' final pour le singulier
-              : `Ajouter ${getTabTitle().toLowerCase().slice(0, -1)}`
-            }
+            {(() => {
+              // Cas spécial pour les expériences dans l'onglet CV
+              if (
+                activeTab === "cv" &&
+                editingItemId &&
+                editingItemId.startsWith("experience-")
+              ) {
+                return editingItemId === "experience-new"
+                  ? "Ajouter une expérience"
+                  : "Modifier l'expérience";
+              }
+              // Cas spécial pour les formations dans l'onglet formation
+              if (
+                activeTab === "formation" &&
+                editingItemId &&
+                editingItemId.startsWith("formation-")
+              ) {
+                return editingItemId === "formation-new"
+                  ? "Ajouter une formation"
+                  : "Modifier la formation";
+              }
+              // Cas spécial pour les reconnaissances dans l'onglet formation
+              if (
+                activeTab === "formation" &&
+                editingItemId &&
+                editingItemId.startsWith("reconnaissance-")
+              ) {
+                return editingItemId === "reconnaissance-new"
+                  ? "Ajouter une reconnaissance"
+                  : "Modifier la reconnaissance";
+              }
+              // Logique normale pour les autres cas
+              return editingItemId
+                ? `Modifier ${getTabTitle().toLowerCase().slice(0, -1)}`
+                : `Ajouter ${getTabTitle().toLowerCase().slice(0, -1)}`;
+            })()}
           </h3>
           {renderEditForm()}
         </div>

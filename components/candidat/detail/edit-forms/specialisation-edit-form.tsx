@@ -181,7 +181,7 @@ export function SpecialisationEditForm({
                 onChange={(e) => updateSpecialisationField("certifie", e.target.checked)}
                 className="rounded"
               />
-              <Label htmlFor="certifie">Certifié</Label>
+              <Label htmlFor="certifie">Certifications</Label>
             </div>
           </div>
 

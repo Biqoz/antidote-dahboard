@@ -3,12 +3,10 @@ import { useState, useEffect } from "react";
 export type TabType =
   | "vue-ensemble"
   | "cv"
-  | "experience"
   | "formation"
   | "competences"
   | "specialisation"
   | "jobs-cibles"
-  | "reconnaissances"
   | "motivation"
   | "candidatures"
   | "notes"

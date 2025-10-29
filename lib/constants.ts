@@ -22,13 +22,8 @@ export const MANDAT_STATUS = {
 } as const;
 
 export const CONTRACT_TYPES = {
-  cdi: "CDI",
-  cdd: "CDD",
-  stage: "Stage",
-  freelance: "Freelance",
-  interim: "Intérim",
-  apprentissage: "Apprentissage",
-  alternance: "Alternance",
+  determine: "Déterminé",
+  indetermine: "Indéterminé",
 } as const;
 
 export const JOB_TYPES = {
@@ -62,11 +57,6 @@ export const WORK_MODES = {
 } as const;
 
 export const EDUCATION_LEVELS = {
-  sans_diplome: "Sans diplôme",
-  cap_bep: "CAP/BEP",
-  bac: "Baccalauréat",
-  bac_2: "Bac+2",
-  bac_3: "Bac+3",
   bac_5: "Bac+5",
   doctorat: "Doctorat",
 } as const;
@@ -78,26 +68,26 @@ export const PRIORITY_LEVELS = {
 } as const;
 
 export const SECTORS = [
-  "Technologie",
-  "Finance",
-  "Santé",
-  "Éducation",
-  "Commerce",
-  "Industrie",
-  "Services",
-  "Immobilier",
-  "Transport",
-  "Énergie",
-  "Médias",
-  "Tourisme",
-  "Agriculture",
-  "Construction",
-  "Conseil",
-  "Automobile",
-  "Aéronautique",
-  "Pharmaceutique",
-  "Télécommunications",
-  "Assurance",
+  "Hôpitaux publics",
+  "Cliniques privées",
+  "Laboratoires d'analyses médicales",
+  "Pharmacies",
+  "Industrie pharmaceutique",
+  "Dispositifs médicaux",
+  "Imagerie médicale",
+  "Centres de soins",
+  "Maisons de retraite",
+  "Services de soins à domicile",
+  "Centres de rééducation",
+  "Santé mentale",
+  "Urgences et SAMU",
+  "Chirurgie",
+  "Médecine générale",
+  "Spécialités médicales",
+  "Recherche médicale",
+  "Biotechnologies",
+  "E-santé",
+  "Télémédecine",
 ] as const;
 
 export const LANGUAGES = [

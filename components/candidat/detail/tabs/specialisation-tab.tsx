@@ -97,7 +97,7 @@ export function SpecialisationTab({
                               variant="outline"
                               className="text-green-700 border-green-300"
                             >
-                              Certifié
+                              Certifications
                             </Badge>
                           )}
                           {onEditItem && !isEditing && (

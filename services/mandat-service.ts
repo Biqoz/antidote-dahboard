@@ -2,57 +2,75 @@ import { supabase } from "@/lib/supabase";
 import { Mandat } from "@/types/mandat";
 
 export class MandatService {
-  private static readonly TABLE_NAME = 'mandats';
+  private static readonly TABLE_NAME = "mandats";
 
   // Fonction utilitaire pour nettoyer les données (convertir les chaînes vides en null)
-  private static cleanData(data: Record<string, unknown>): Record<string, unknown> {
+  private static cleanData(
+    data: Record<string, unknown>
+  ): Record<string, unknown> {
     const cleanedData = { ...data };
-    
-    console.log('📥 Données avant nettoyage:', JSON.stringify(data, null, 2));
-    
+
+    console.log("📥 Données avant nettoyage:", JSON.stringify(data, null, 2));
+
     // Champs obligatoires qui ne doivent pas être null
-    const requiredFields = ['titre', 'entreprise_id', 'statut'];
-    
+    const requiredFields = ["titre", "entreprise_id", "statut"];
+
     // Champs de date spécifiques
-    const dateFields = ['date_debut'];
-    
+    const dateFields = ["date_debut"];
+
     // Nettoyer tous les champs (sauf les obligatoires)
-    Object.keys(cleanedData).forEach(field => {
+    Object.keys(cleanedData).forEach((field) => {
       const value = cleanedData[field];
-      
+
       // Ne pas toucher aux champs obligatoires
       if (requiredFields.includes(field)) {
         console.log(`🔒 Champ obligatoire '${field}' conservé: '${value}'`);
         return;
       }
-      
+
       // Gestion spéciale des champs de date
       if (dateFields.includes(field)) {
-        if (value === "" || value === undefined || value === null || 
-            (typeof value === 'string' && value.trim() === "")) {
-          console.log(`📅 Nettoyage du champ date '${field}': '${value}' -> null`);
+        if (
+          value === "" ||
+          value === undefined ||
+          value === null ||
+          (typeof value === "string" && value.trim() === "")
+        ) {
+          console.log(
+            `📅 Nettoyage du champ date '${field}': '${value}' -> null`
+          );
           cleanedData[field] = null;
         } else {
           console.log(`📅 Champ date '${field}' conservé: '${value}'`);
         }
         return;
       }
-      
+
       // Convertir les chaînes vides, undefined, ou valeurs falsy en null
       if (value === "" || value === undefined || value === null) {
         console.log(`🧹 Nettoyage du champ '${field}': '${value}' -> null`);
         cleanedData[field] = null;
       }
-      
+
       // Cas spécial pour les nombres: convertir les chaînes vides en null
-      if (typeof value === 'string' && value.trim() === "" && 
-          (field.includes('salaire') || field.includes('nombre') || field.includes('experience'))) {
-        console.log(`🔢 Nettoyage du champ numérique '${field}': '${value}' -> null`);
+      if (
+        typeof value === "string" &&
+        value.trim() === "" &&
+        (field.includes("salaire") ||
+          field.includes("nombre") ||
+          field.includes("experience"))
+      ) {
+        console.log(
+          `🔢 Nettoyage du champ numérique '${field}': '${value}' -> null`
+        );
         cleanedData[field] = null;
       }
     });
-    
-    console.log('📤 Données après nettoyage:', JSON.stringify(cleanedData, null, 2));
+
+    console.log(
+      "📤 Données après nettoyage:",
+      JSON.stringify(cleanedData, null, 2)
+    );
     return cleanedData;
   }
 
@@ -122,11 +140,17 @@ export class MandatService {
     mandatData: Omit<Mandat, "id" | "created_at" | "updated_at">
   ): Promise<Mandat> {
     try {
-      console.log('🚀 DÉBUT CREATE MANDAT - Données reçues:', JSON.stringify(mandatData, null, 2));
-      
+      console.log(
+        "🚀 DÉBUT CREATE MANDAT - Données reçues:",
+        JSON.stringify(mandatData, null, 2)
+      );
+
       // Nettoyer les données avant insertion
       const cleanedData = this.cleanData(mandatData);
-      console.log('✅ Données nettoyées:', JSON.stringify(cleanedData, null, 2));
+      console.log(
+        "✅ Données nettoyées:",
+        JSON.stringify(cleanedData, null, 2)
+      );
 
       const { data, error } = await supabase
         .from(this.TABLE_NAME)
@@ -136,8 +160,10 @@ export class MandatService {
 
       if (error) {
         console.error("Erreur Supabase lors de la création:", error);
-        if (error.message?.includes('connection')) {
-          throw new Error("Erreur de connexion à la base de données. Vérifiez votre connexion internet.");
+        if (error.message?.includes("connection")) {
+          throw new Error(
+            "Erreur de connexion à la base de données. Vérifiez votre connexion internet."
+          );
         }
         throw new Error(`Impossible de créer le mandat: ${error.message}`);
       }
@@ -149,16 +175,19 @@ export class MandatService {
     }
   }
 
-  static async update(id: string, mandatData: Partial<Omit<Mandat, 'id' | 'created_at' | 'updated_at'>>): Promise<Mandat> {
+  static async update(
+    id: string,
+    mandatData: Partial<Omit<Mandat, "id" | "created_at" | "updated_at">>
+  ): Promise<Mandat> {
     try {
       // Nettoyer les données avant mise à jour
       const cleanedData = this.cleanData(mandatData);
-      console.log('Données nettoyées:', cleanedData);
-      
+      console.log("Données nettoyées:", cleanedData);
+
       const { data, error } = await supabase
         .from(this.TABLE_NAME)
         .update(cleanedData)
-        .eq('id', id)
+        .eq("id", id)
         .select()
         .single();
 

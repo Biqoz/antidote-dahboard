@@ -4,12 +4,10 @@ import React from "react";
 import {
   LayoutDashboard,
   FileText,
-  Briefcase,
   GraduationCap,
   Award,
   Target,
   Crosshair,
-  Medal,
   Heart,
   Send,
   StickyNote,
@@ -36,13 +34,8 @@ const navigationItems = [
   },
   {
     id: "cv",
-    label: "CV",
+    label: "CV & Expériences",
     icon: FileText,
-  },
-  {
-    id: "experience",
-    label: "Expérience",
-    icon: Briefcase,
   },
   {
     id: "formation",
@@ -50,14 +43,19 @@ const navigationItems = [
     icon: GraduationCap,
   },
   {
+    id: "specialisation",
+    label: "Spécialisations",
+    icon: Target,
+  },
+  {
     id: "competences",
     label: "Compétences",
     icon: Award,
   },
   {
-    id: "specialisation",
-    label: "Spécialisation",
-    icon: Target,
+    id: "motivation",
+    label: "Motivations",
+    icon: Heart,
   },
   {
     id: "jobs-cibles",
@@ -65,18 +63,8 @@ const navigationItems = [
     icon: Crosshair,
   },
   {
-    id: "reconnaissances",
-    label: "Reconnaissances",
-    icon: Medal,
-  },
-  {
-    id: "motivation",
-    label: "Motivation",
-    icon: Heart,
-  },
-  {
     id: "candidatures",
-    label: "Candidatures",
+    label: "Candidature",
     icon: Send,
     count: 12,
   },

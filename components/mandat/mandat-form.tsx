@@ -38,20 +38,8 @@ import {
 const mandatSchema = z.object({
   titre: z.string().min(1, "Le titre est requis"),
   description: z.string().optional(),
-  type_contrat: z
-    .enum([
-      "cdi",
-      "cdd",
-      "stage",
-      "freelance",
-      "interim",
-      "apprentissage",
-      "alternance",
-    ])
-    .optional(),
-  type_poste: z
-    .enum(["temps_plein", "temps_partiel", "contrat", "stage", "benevolat"])
-    .optional(),
+  type_contrat: z.enum(["determine", "indetermine"]).optional(),
+  type_poste: z.enum(["temps_plein", "temps_partiel", "contrat"]).optional(),
   niveau_experience: z
     .enum([
       "debutant",
@@ -66,31 +54,22 @@ const mandatSchema = z.object({
     .enum(["startup", "pme", "eti", "grande_entreprise", "administration"])
     .optional(),
   mode_travail: z.enum(["sur_site", "hybride", "teletravail"]).optional(),
-  niveau_etudes: z
-    .enum([
-      "sans_diplome",
-      "cap_bep",
-      "bac",
-      "bac_2",
-      "bac_3",
-      "bac_5",
-      "doctorat",
-    ])
-    .optional(),
+  niveau_etudes: z.enum(["bac_5", "doctorat"]).optional(),
   langues_requises: z.array(z.string()).optional(),
   avantages: z.array(z.string()).optional(),
   statut: z.enum(["ouvert", "en_cours", "ferme", "suspendu"]),
   salaire_min: z.number().min(0).optional(),
   salaire_max: z.number().min(0).optional(),
   localisation: z.string().optional(),
-  competences_requises: z.array(z.string()).optional(),
+  competences_requises: z.string().optional(),
+  competences_souhaitees: z.string().optional(),
   date_debut: z.string().optional(),
   priorite: z.enum(["basse", "normale", "haute"]).optional(),
   nombre_postes: z.number().min(1).optional(),
   entreprise_id: z.string().min(1, "Le client est requis"),
 });
 
-type MandatFormData = z.infer<typeof mandatSchema>;
+export type MandatFormData = z.infer<typeof mandatSchema>;
 
 interface MandatFormProps {
   onSubmit: (data: MandatFormData) => Promise<void>;
@@ -116,9 +95,6 @@ export function MandatForm({
   const [selectedBenefits, setSelectedBenefits] = useState<string[]>(
     mandat?.avantages || []
   );
-  const [selectedSkills, setSelectedSkills] = useState<string[]>(
-    mandat?.competences_requises || []
-  );
 
   const form = useForm<MandatFormData>({
     resolver: zodResolver(mandatSchema),
@@ -138,7 +114,8 @@ export function MandatForm({
       salaire_min: mandat?.salaire_min,
       salaire_max: mandat?.salaire_max,
       localisation: mandat?.localisation || "",
-      competences_requises: mandat?.competences_requises || [],
+      competences_requises: mandat?.competences_requises || "",
+      competences_souhaitees: mandat?.competences_souhaitees || "",
       date_debut: mandat?.date_debut || "",
       priorite: mandat?.priorite || "normale",
       nombre_postes: mandat?.nombre_postes || 1,
@@ -165,7 +142,8 @@ export function MandatForm({
         salaire_min: mandat.salaire_min,
         salaire_max: mandat.salaire_max,
         localisation: mandat.localisation || "",
-        competences_requises: mandat.competences_requises || [],
+        competences_requises: mandat.competences_requises || "",
+        competences_souhaitees: mandat.competences_souhaitees || "",
         date_debut: mandat.date_debut || "",
         priorite: mandat.priorite || "normale",
         nombre_postes: mandat.nombre_postes || 1,
@@ -174,7 +152,6 @@ export function MandatForm({
       form.reset(resetData);
       setSelectedLanguages(mandat.langues_requises || []);
       setSelectedBenefits(mandat.avantages || []);
-      setSelectedSkills(mandat.competences_requises || []);
     } else {
       const resetData = {
         titre: "",
@@ -192,7 +169,8 @@ export function MandatForm({
         salaire_min: undefined,
         salaire_max: undefined,
         localisation: "",
-        competences_requises: [],
+        competences_requises: "",
+        competences_souhaitees: "",
         date_debut: "",
         priorite: "normale" as const,
         nombre_postes: 1,
@@ -201,7 +179,6 @@ export function MandatForm({
       form.reset(resetData);
       setSelectedLanguages([]);
       setSelectedBenefits([]);
-      setSelectedSkills([]);
     }
   }, [mandat, form, preSelectedClientId]);
 
@@ -212,14 +189,12 @@ export function MandatForm({
         ...data,
         langues_requises: selectedLanguages,
         avantages: selectedBenefits,
-        competences_requises: selectedSkills,
       };
       await onSubmit(submitData);
       if (mode === "create") {
         form.reset();
         setSelectedLanguages([]);
         setSelectedBenefits([]);
-        setSelectedSkills([]);
       }
     } catch (error) {
       console.error("Erreur lors de la soumission:", error);
@@ -244,16 +219,6 @@ export function MandatForm({
 
   const removeBenefit = (benefit: string) => {
     setSelectedBenefits(selectedBenefits.filter((b) => b !== benefit));
-  };
-
-  const addSkill = (skill: string) => {
-    if (skill.trim() && !selectedSkills.includes(skill.trim())) {
-      setSelectedSkills([...selectedSkills, skill.trim()]);
-    }
-  };
-
-  const removeSkill = (skill: string) => {
-    setSelectedSkills(selectedSkills.filter((s) => s !== skill));
   };
 
   return (
@@ -586,38 +551,40 @@ export function MandatForm({
             </h3>
 
             {/* Compétences requises */}
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700">
-                Compétences requises
-              </label>
-              <div className="flex flex-wrap gap-2 mb-2">
-                {selectedSkills.map((skill) => (
-                  <span
-                    key={skill}
-                    className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800 border"
-                  >
-                    {skill}
-                    <button
-                      type="button"
-                      onClick={() => removeSkill(skill)}
-                      className="ml-2 text-gray-600 hover:text-gray-800"
-                    >
-                      ×
-                    </button>
-                  </span>
-                ))}
-              </div>
-              <Input
-                placeholder="Tapez une compétence et appuyez sur Entrée"
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                    e.preventDefault();
-                    addSkill(e.currentTarget.value);
-                    e.currentTarget.value = "";
-                  }
-                }}
-              />
-            </div>
+            <FormField
+              control={form.control}
+              name="competences_requises"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Compétences requises</FormLabel>
+                  <FormControl>
+                    <Textarea
+                      placeholder="Décrivez les compétences requises pour ce poste..."
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            {/* Compétences souhaitées */}
+            <FormField
+              control={form.control}
+              name="competences_souhaitees"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Compétences souhaitées</FormLabel>
+                  <FormControl>
+                    <Textarea
+                      placeholder="Décrivez les compétences souhaitées pour ce poste..."
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
             {/* Langues requises */}
             <div className="space-y-2">
@@ -869,7 +836,7 @@ export function MandatForm({
             <Button
               type="submit"
               disabled={isSubmitting || form.formState.isSubmitting}
-              className="bg-blue-600 hover:bg-blue-700"
+              className="bg-black/90 hover:bg-black"
             >
               {isSubmitting || form.formState.isSubmitting
                 ? "En cours..."

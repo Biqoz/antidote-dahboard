@@ -243,31 +243,39 @@ export function MandatDetailView({
             </div>
           </div>
 
-          {/* Compétences compactes */}
+          {/* Compétences requises */}
           <div className="bg-gray-50 rounded-lg p-4">
             <h3 className="text-sm font-semibold text-gray-900 mb-2">
-              Compétences
+              Compétences requises
             </h3>
             {mandat.competences_requises &&
-            mandat.competences_requises.length > 0 ? (
-              <div className="flex flex-wrap gap-1">
-                {mandat.competences_requises.map((competence, index) => (
-                  <span
-                    key={index}
-                    className="inline-flex items-center px-2 py-1 rounded text-xs bg-white text-gray-700 border"
-                  >
-                    {competence}
-                  </span>
-                ))}
+            mandat.competences_requises.trim() ? (
+              <div className="text-sm text-gray-700 whitespace-pre-wrap">
+                {mandat.competences_requises}
               </div>
             ) : (
               <p className="text-sm text-gray-500">
-                Aucune compétence spécifiée
+                Aucune compétence requise spécifiée
               </p>
             )}
           </div>
 
-
+          {/* Compétences souhaitées */}
+          <div className="bg-gray-50 rounded-lg p-4">
+            <h3 className="text-sm font-semibold text-gray-900 mb-2">
+              Compétences souhaitées
+            </h3>
+            {mandat.competences_souhaitees &&
+            mandat.competences_souhaitees.trim() ? (
+              <div className="text-sm text-gray-700 whitespace-pre-wrap">
+                {mandat.competences_souhaitees}
+              </div>
+            ) : (
+              <p className="text-sm text-gray-500">
+                Aucune compétence souhaitée spécifiée
+              </p>
+            )}
+          </div>
         </div>
 
         {/* Sidebar informations */}

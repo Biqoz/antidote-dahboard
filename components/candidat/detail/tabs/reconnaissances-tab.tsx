@@ -63,7 +63,9 @@ export function ReconnaissancesTab({
               }`}
             >
               <div className="flex justify-between items-center">
-                <h3 className="font-medium text-lg">Reconnaissance #{index + 1}</h3>
+                <h3 className="font-medium text-lg">
+                  {reconnaissance.equivalence || reconnaissance.organisme || reconnaissance.organisme_reconnaissance || `Reconnaissance ${index + 1}`}
+                </h3>
                 {!isEditing && (
                   <div className="flex gap-2">
                     {onEditItem && (

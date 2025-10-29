@@ -86,27 +86,29 @@ export function MandatDetails({ mandat }: MandatDetailsProps) {
         </div>
       </div>
 
-      {/* Compétences */}
-      {mandat.competences_requises &&
-        mandat.competences_requises.length > 0 && (
-          <div className="mb-4">
-            <h5 className="font-medium text-gray-900 mb-2 flex items-center gap-2">
-              🎯 Compétences requises
-            </h5>
-            <div className="flex flex-wrap gap-2">
-              {mandat.competences_requises.map(
-                (competence: string, index: number) => (
-                  <span
-                    key={index}
-                    className="px-2 py-1 bg-gray-100 text-gray-700 rounded-md text-xs font-medium"
-                  >
-                    {competence}
-                  </span>
-                )
-              )}
-            </div>
+      {/* Compétences requises */}
+      {mandat.competences_requises && mandat.competences_requises.trim() && (
+        <div className="mb-4">
+          <h5 className="font-medium text-gray-900 mb-2 flex items-center gap-2">
+            🎯 Compétences requises
+          </h5>
+          <div className="text-sm text-gray-700 bg-gray-50 p-3 rounded-md whitespace-pre-wrap">
+            {mandat.competences_requises}
           </div>
-        )}
+        </div>
+      )}
+
+      {/* Compétences souhaitées */}
+      {mandat.competences_souhaitees && mandat.competences_souhaitees.trim() && (
+        <div className="mb-4">
+          <h5 className="font-medium text-gray-900 mb-2 flex items-center gap-2">
+            💡 Compétences souhaitées
+          </h5>
+          <div className="text-sm text-blue-700 bg-blue-50 p-3 rounded-md border border-blue-200 whitespace-pre-wrap">
+            {mandat.competences_souhaitees}
+          </div>
+        </div>
+      )}
 
       <MandatActions />
     </div>

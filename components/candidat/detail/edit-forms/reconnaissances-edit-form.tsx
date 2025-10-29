@@ -24,11 +24,12 @@ export function ReconnaissancesEditForm({
 }: ReconnaissancesEditFormProps) {
   // Déterminer si on édite un élément spécifique ou on ajoute un nouveau
   const isEditingSpecific = editingItemId && editingItemId.startsWith('reconnaissance-');
-  const editingIndex = isEditingSpecific ? parseInt(editingItemId.split('-')[1]) : -1;
+  const isAddingNew = editingItemId === 'reconnaissance-new';
+  const editingIndex = isEditingSpecific && !isAddingNew ? parseInt(editingItemId.split('-')[1]) : -1;
   
   // État pour l'élément en cours d'édition
   const [reconnaissance, setReconnaissance] = useState<ReconnaissanceDiplome>(() => {
-    if (isEditingSpecific && candidat.reconnaissances_diplomes?.[editingIndex]) {
+    if (isEditingSpecific && !isAddingNew && candidat.reconnaissances_diplomes?.[editingIndex]) {
       return candidat.reconnaissances_diplomes[editingIndex];
     }
     return {}; // Nouvel élément
@@ -49,7 +50,7 @@ export function ReconnaissancesEditForm({
         // Mettre à jour la liste complète des reconnaissances
         const updatedReconnaissances = [...(candidat.reconnaissances_diplomes || [])];
         
-        if (isEditingSpecific) {
+        if (isEditingSpecific && !isAddingNew && editingIndex >= 0) {
           // Modifier l'élément existant
           updatedReconnaissances[editingIndex] = reconnaissance;
         } else {
@@ -80,7 +81,7 @@ export function ReconnaissancesEditForm({
       <Card>
         <CardHeader>
           <CardTitle>
-            {isEditingSpecific ? 'Modifier la reconnaissance' : 'Ajouter une reconnaissance'}
+            {isAddingNew ? 'Ajouter une reconnaissance' : 'Modifier la reconnaissance'}
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">

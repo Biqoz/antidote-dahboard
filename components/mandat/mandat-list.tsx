@@ -95,7 +95,9 @@ export function MandatList({
                     </h3>
                     {mandat.type_contrat && (
                       <p className="text-sm text-gray-500 truncate">
-                        {mandat.type_contrat === "determine" ? "Déterminé" : "Indéterminé"}
+                        {mandat.type_contrat === "determine"
+                          ? "Déterminé"
+                          : "Indéterminé"}
                       </p>
                     )}
                   </div>

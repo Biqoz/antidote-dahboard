@@ -3,6 +3,7 @@ import { Candidat } from "@/types/candidat";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { supabase } from "@/lib/supabase";
 
 interface CompetencesEditFormProps {
@@ -20,6 +21,58 @@ export function CompetencesEditForm({
   updateField,
   editingItemId,
 }: CompetencesEditFormProps) {
+  // Compétences du secteur médical prédéfinies
+  const competencesMedicales = [
+    "Soins infirmiers",
+    "Administration de médicaments",
+    "Prise de tension artérielle",
+    "Prélèvements sanguins",
+    "Pose de perfusions",
+    "Soins de plaies",
+    "Hygiène hospitalière",
+    "Gestion des dossiers patients",
+    "Urgences médicales",
+    "Réanimation cardio-pulmonaire (RCP)",
+    "Utilisation défibrillateur",
+    "Soins palliatifs",
+    "Gériatrie",
+    "Pédiatrie",
+    "Chirurgie",
+    "Anesthésie",
+    "Radiologie",
+    "Laboratoire d'analyses",
+    "Pharmacie hospitalière",
+    "Kinésithérapie",
+    "Ergothérapie",
+    "Orthophonie",
+    "Psychologie clinique",
+    "Diététique",
+    "Sage-femme",
+    "Aide-soignant",
+    "Ambulancier",
+    "Secrétariat médical",
+    "Imagerie médicale",
+    "Cardiologie",
+    "Neurologie",
+    "Oncologie",
+    "Pneumologie",
+    "Gastro-entérologie",
+    "Dermatologie",
+    "Ophtalmologie",
+    "ORL",
+    "Gynécologie-obstétrique",
+    "Urologie",
+    "Rhumatologie",
+    "Endocrinologie",
+    "Néphrologie",
+    "Hématologie",
+    "Infectiologie",
+    "Médecine d'urgence",
+    "Médecine générale",
+    "Médecine du travail",
+    "Santé publique"
+  ];
+
   // Déterminer si on ajoute une nouvelle compétence ou on édite une existante
   const isAddingNew = editingItemId === "competences-new";
   const editingIndex =
@@ -40,6 +93,7 @@ export function CompetencesEditForm({
   });
 
   const [isLoading, setIsLoading] = useState(false);
+  const [useCustomInput, setUseCustomInput] = useState(false);
 
   const updateCompetenceField = (value: string) => {
     setCompetence(value);
@@ -120,12 +174,56 @@ export function CompetencesEditForm({
       </div>
 
       <div className="space-y-4">
-        <Input
-          value={competence}
-          onChange={(e) => updateCompetenceField(e.target.value)}
-          placeholder="Nom de la compétence"
-          required
-        />
+        {/* Toggle entre select et input libre */}
+        <div className="flex items-center gap-4">
+          <Button
+            type="button"
+            variant={!useCustomInput ? "default" : "outline"}
+            size="sm"
+            onClick={() => setUseCustomInput(false)}
+          >
+            Compétences médicales
+          </Button>
+          <Button
+            type="button"
+            variant={useCustomInput ? "default" : "outline"}
+            size="sm"
+            onClick={() => setUseCustomInput(true)}
+          >
+            Saisie libre
+          </Button>
+        </div>
+
+        {/* Select des compétences médicales */}
+        {!useCustomInput ? (
+          <div>
+            <Label htmlFor="competence-select">Sélectionner une compétence médicale</Label>
+            <Select value={competence} onValueChange={setCompetence}>
+              <SelectTrigger>
+                <SelectValue placeholder="Choisissez une compétence médicale" />
+              </SelectTrigger>
+              <SelectContent>
+                {competencesMedicales.map((comp) => (
+                  <SelectItem key={comp} value={comp}>
+                    {comp}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        ) : (
+          /* Input libre */
+          <div>
+            <Label htmlFor="competence-input">Saisie libre</Label>
+            <Input
+              id="competence-input"
+              value={competence}
+              onChange={(e) => updateCompetenceField(e.target.value)}
+              placeholder="Nom de la compétence"
+              required
+            />
+          </div>
+        )}
       </div>
 
       <div className="flex justify-end gap-2 pt-4">
