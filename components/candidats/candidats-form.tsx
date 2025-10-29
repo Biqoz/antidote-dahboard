@@ -28,7 +28,6 @@ const candidatschema = z.object({
         message: "Email invalide",
       }
     ),
-  specialisation: z.string().max(255, "Spécialisation trop longue").optional(),
   niveau_experience: z.string().max(100, "Niveau d'expérience trop long").optional(),
   statut: z.string(),
 });
@@ -71,7 +70,6 @@ export function CandidatForm({
           pays: candidat.pays || "",
           telephone: candidat.telephone || "",
           email: candidat.email || "",
-          specialisation: candidat.specialisation || "",
           niveau_experience: candidat.niveau_experience || "",
           statut: candidat.statut,
         }
@@ -96,7 +94,6 @@ export function CandidatForm({
         pays: candidat.pays || "",
         telephone: candidat.telephone || "",
         email: candidat.email || "",
-        specialisation: candidat.specialisation || "",
         niveau_experience: candidat.niveau_experience || "",
         statut: candidat.statut,
       });
@@ -110,7 +107,6 @@ export function CandidatForm({
         pays: "France",
         telephone: "",
         email: "",
-        specialisation: "",
         niveau_experience: "",
         statut: "actif",
       });
@@ -134,8 +130,6 @@ export function CandidatForm({
         ...(data.telephone &&
           data.telephone !== "" && { telephone: data.telephone }),
         ...(data.email && data.email !== "" && { email: data.email }),
-        ...(data.specialisation &&
-          data.specialisation !== "" && { specialisation: data.specialisation }),
         ...(data.niveau_experience &&
           data.niveau_experience !== "" && { niveau_experience: data.niveau_experience }),
       };
@@ -192,18 +186,8 @@ export function CandidatForm({
               </Field>
             </div>
 
-            {/* Spécialisation et expérience */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <Field error={errors.specialisation?.message}>
-                <Label htmlFor="specialisation">Spécialisation</Label>
-                <Input
-                  id="specialisation"
-                  {...register("specialisation")}
-                  placeholder="Ex: Développement web"
-                  className={errors.specialisation ? "border-red-500" : ""}
-                />
-              </Field>
-
+            {/* Niveau d'expérience */}
+            <div className="grid grid-cols-1 gap-6">
               <Field error={errors.niveau_experience?.message}>
                 <Label htmlFor="niveau_experience">Niveau d&apos;expérience</Label>
                 <Input
