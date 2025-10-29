@@ -3,7 +3,6 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Candidat } from "@/types/candidat";
 import { useState, useEffect } from "react";
-import { MandatService } from "@/services/mandat-service";
 
 interface CandidatCardProps {
   candidat: Candidat;

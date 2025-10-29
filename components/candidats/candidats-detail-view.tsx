@@ -71,7 +71,7 @@ export function ClientDetailView({
               <span className="text-xs font-medium text-gray-600">Contact</span>
             </div>
             <p className="text-sm text-gray-900">
-              {client.contact_principal || "N/A"}
+              {client.contact_administratif || "N/A"}
             </p>
           </div>
 
