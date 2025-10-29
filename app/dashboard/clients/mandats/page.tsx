@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { PageLayout } from "@/components/layout/page-layout";
 import { MandatView } from "@/components/mandat/mandat-view";
@@ -9,7 +9,8 @@ import { MandatForm } from "@/components/mandat/mandat-form";
 import { Mandat } from "@/types/mandat";
 import { MandatService } from "@/services/mandat-service";
 
-export default function MandatsPage() {
+// Component that uses useSearchParams wrapped in Suspense
+function MandatsPageContent() {
   const [selectedMandat, setSelectedMandat] = useState<Mandat | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -113,5 +114,33 @@ export default function MandatsPage() {
         preSelectedClientId={clientId || undefined}
       />
     </PageLayout>
+  );
+}
+
+// Loading component for Suspense fallback
+function MandatsPageLoading() {
+  const breadcrumbs = [
+    { label: "CLIENTS", href: "/dashboard/clients" },
+    { label: "Mandats", href: "/dashboard/clients/mandats" },
+  ];
+
+  return (
+    <PageLayout breadcrumbs={breadcrumbs}>
+      <div className="flex items-center justify-center h-64">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Chargement...</p>
+        </div>
+      </div>
+    </PageLayout>
+  );
+}
+
+// Main page component with Suspense boundary
+export default function MandatsPage() {
+  return (
+    <Suspense fallback={<MandatsPageLoading />}>
+      <MandatsPageContent />
+    </Suspense>
   );
 }
