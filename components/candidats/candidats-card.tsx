@@ -1,7 +1,7 @@
 import { Building2, Edit, Trash2, Briefcase } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Candidat } from "@/types/client";
+import { Candidat } from "@/types/candidat";
 import { useState, useEffect } from "react";
 import { MandatService } from "@/services/mandat-service";
 
