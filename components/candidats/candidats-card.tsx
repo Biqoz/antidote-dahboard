@@ -23,8 +23,9 @@ export function CandidatCard({
   useEffect(() => {
     const fetchMandatsCount = async () => {
       try {
-        const mandats = await MandatService.getByCandidatId(candidat.id);
-        setMandatsCount(mandats.length);
+        // Pour l'instant, on met 0 car il n'y a pas de méthode getByCandidatId
+        // Il faudrait créer cette méthode ou utiliser une autre approche
+        setMandatsCount(0);
       } catch (error) {
         console.error("Erreur lors de la récupération des mandats:", error);
         setMandatsCount(0);
@@ -73,11 +74,11 @@ export function CandidatCard({
           </div>
           <div className="min-w-0 flex-1">
             <h3 className="font-semibold text-gray-900 truncate">
-              {candidat.nom}
+              {candidat.nom} {candidat.prenom}
             </h3>
-            {candidat.secteur_activite && (
+            {candidat.specialisation && (
               <p className="text-sm text-gray-500 truncate">
-                {candidat.secteur_activite}
+                {candidat.specialisation}
               </p>
             )}
           </div>
