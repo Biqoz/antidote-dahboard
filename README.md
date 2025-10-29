@@ -1,4 +1,4 @@
-# 🎯 Group Optimal Dashboard
+# 🎯 Cercle-Talents - Optimal Dashboard
 
 > **Plateforme de gestion RH et recrutement nouvelle génération**
 

@@ -1,79 +1,89 @@
-import React, { useState } from "react";
-import { Candidat, NoteItem } from "@/types/candidat";
+import React, { useState, useEffect } from "react";
+import { Candidat, Note } from "@/types/candidat";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Trash2, Plus } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 
 interface NotesEditFormProps {
   candidat: Candidat;
+  editingItemId?: string;
   onSuccess: () => void;
   onCancel: () => void;
-  updateField?: (field: string, value: unknown) => Promise<void>;
 }
 
 export function NotesEditForm({
   candidat,
+  editingItemId,
   onSuccess,
   onCancel,
-  updateField,
 }: NotesEditFormProps) {
-  const [notes, setNotes] = useState<NoteItem[]>(
-    candidat.notes_profil || []
-  );
+  const [note, setNote] = useState<Partial<Note>>({
+    contenu: "",
+    type: "remarque",
+  });
   const [isLoading, setIsLoading] = useState(false);
 
-  const addNote = () => {
-    const newNote: NoteItem = {
-      id: Date.now().toString(),
-      titre: "",
-      contenu: "",
-      categorie: "general",
-      priorite: "normale",
-      date_creation: new Date().toISOString(),
-      date_modification: new Date().toISOString(),
-    };
-    setNotes([...notes, newNote]);
-  };
-
-  const removeNote = (id: string) => {
-    setNotes(notes.filter(n => n.id !== id));
-  };
-
-  const updateNote = (id: string, field: keyof NoteItem, value: string) => {
-    setNotes(notes.map(n => 
-      n.id === id ? { ...n, [field]: value, date_modification: new Date().toISOString() } : n
-    ));
-  };
+  useEffect(() => {
+    if (editingItemId) {
+      // Mode édition - charger la note existante
+      const existingNote = candidat.profil_notes?.find(n => n.id === editingItemId);
+      if (existingNote) {
+        setNote({
+          contenu: existingNote.contenu,
+          type: existingNote.type || "remarque",
+        });
+      }
+    } else {
+      // Mode ajout - réinitialiser le formulaire
+      setNote({
+        contenu: "",
+        type: "remarque",
+      });
+    }
+  }, [editingItemId, candidat.profil_notes]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
 
     try {
-      if (updateField) {
-        await updateField('notes_profil', notes);
-      } else {
+      // Validation
+      if (!note.contenu?.trim()) {
+        alert("Le contenu de la note est requis");
+        return;
+      }
+
+      if (editingItemId) {
+        // Mode édition - mettre à jour la note existante
         const { error } = await supabase
-          .from('profils')
+          .from('profil_notes')
           .update({
-            notes_profil: notes,
-            updated_at: new Date().toISOString(),
+            contenu: note.contenu,
+            type: note.type,
           })
-          .eq('id', candidat.id);
+          .eq('id', editingItemId);
+
+        if (error) throw error;
+      } else {
+        // Mode ajout - créer une nouvelle note
+        const { error } = await supabase
+          .from('profil_notes')
+          .insert({
+            profil_id: candidat.id,
+            contenu: note.contenu,
+            type: note.type,
+          });
 
         if (error) throw error;
       }
 
-      alert("Notes mises à jour avec succès");
+      alert(editingItemId ? "Note mise à jour avec succès" : "Note ajoutée avec succès");
       onSuccess();
     } catch (error) {
-      console.error('Erreur lors de la mise à jour:', error);
-      alert("Erreur lors de la mise à jour des notes");
+      console.error('Erreur lors de la sauvegarde:', error);
+      alert("Erreur lors de la sauvegarde de la note");
     } finally {
       setIsLoading(false);
     }
@@ -82,89 +92,43 @@ export function NotesEditForm({
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="flex justify-between items-center">
-        <h3 className="text-lg font-medium">Notes du profil</h3>
-        <Button type="button" onClick={addNote} size="sm">
-          <Plus className="h-4 w-4 mr-2" />
-          Ajouter une note
-        </Button>
+        <h3 className="text-lg font-medium">
+          {editingItemId ? "Modifier la note" : "Ajouter une note"}
+        </h3>
       </div>
 
       <div className="space-y-4">
-        {notes.map((note) => (
-          <Card key={note.id}>
-            <CardHeader className="pb-3">
-              <div className="flex justify-between items-center">
-                <CardTitle className="text-base">Note #{note.id}</CardTitle>
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  onClick={() => removeNote(note.id)}
-                >
-                  <Trash2 className="h-4 w-4" />
-                </Button>
-              </div>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid grid-cols-3 gap-4">
-                <div>
-                  <Label>Titre</Label>
-                  <Input
-                    value={note.titre}
-                    onChange={(e) => updateNote(note.id, 'titre', e.target.value)}
-                    placeholder="Titre de la note"
-                  />
-                </div>
-                <div>
-                  <Label>Catégorie</Label>
-                  <Select
-                    value={note.categorie}
-                    onValueChange={(value) => updateNote(note.id, 'categorie', value)}
-                  >
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="general">Général</SelectItem>
-                      <SelectItem value="entretien">Entretien</SelectItem>
-                      <SelectItem value="suivi">Suivi</SelectItem>
-                      <SelectItem value="competences">Compétences</SelectItem>
-                      <SelectItem value="motivation">Motivation</SelectItem>
-                      <SelectItem value="administratif">Administratif</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div>
-                  <Label>Priorité</Label>
-                  <Select
-                    value={note.priorite}
-                    onValueChange={(value) => updateNote(note.id, 'priorite', value)}
-                  >
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="basse">Basse</SelectItem>
-                      <SelectItem value="normale">Normale</SelectItem>
-                      <SelectItem value="haute">Haute</SelectItem>
-                      <SelectItem value="urgente">Urgente</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
+        <div>
+          <Label htmlFor="type">Type de note</Label>
+          <Select
+            value={note.type || "remarque"}
+            onValueChange={(value) => setNote({ ...note, type: value })}
+          >
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="remarque">Remarque</SelectItem>
+              <SelectItem value="entretien">Entretien</SelectItem>
+              <SelectItem value="suivi">Suivi</SelectItem>
+              <SelectItem value="competences">Compétences</SelectItem>
+              <SelectItem value="motivation">Motivation</SelectItem>
+              <SelectItem value="administratif">Administratif</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
 
-              <div>
-                <Label>Contenu</Label>
-                <Textarea
-                  value={note.contenu}
-                  onChange={(e) => updateNote(note.id, 'contenu', e.target.value)}
-                  rows={4}
-                  placeholder="Contenu de la note..."
-                />
-              </div>
-            </CardContent>
-          </Card>
-        ))}
+        <div>
+          <Label htmlFor="contenu">Contenu de la note</Label>
+          <Textarea
+            id="contenu"
+            value={note.contenu || ""}
+            onChange={(e) => setNote({ ...note, contenu: e.target.value })}
+            rows={6}
+            placeholder="Saisissez le contenu de la note..."
+            required
+          />
+        </div>
       </div>
 
       <div className="flex justify-end gap-2 pt-4">
@@ -172,7 +136,7 @@ export function NotesEditForm({
           Annuler
         </Button>
         <Button type="submit" disabled={isLoading}>
-          {isLoading ? "Enregistrement..." : "Enregistrer"}
+          {isLoading ? "Enregistrement..." : editingItemId ? "Modifier" : "Ajouter"}
         </Button>
       </div>
     </form>

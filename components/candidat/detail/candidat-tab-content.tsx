@@ -58,7 +58,7 @@ export function CandidatTabContent({
     setEditingItemId(null);
   };
 
-  const handleEditItem = (itemId: string) => {
+  const handleEditItem = (itemId: string | null) => {
     setEditingItemId(itemId);
     setIsEditing(true);
   };
@@ -80,11 +80,11 @@ export function CandidatTabContent({
       case "motivation":
         return "Motivations";
       case "candidatures":
-        return "Candidature";
+        return "Candidatures";
       case "notes":
         return "Notes";
       case "analyse-ia":
-        return "Analyse IA";
+        return "Talents GPT";
       case "memoire-ia":
         return "Mémoire IA";
       default:
@@ -120,7 +120,14 @@ export function CandidatTabContent({
       case "candidatures":
         return <CandidaturesTab {...commonProps} />;
       case "notes":
-        return <NotesTab candidat={candidat} />;
+        return (
+          <NotesTab 
+            candidat={candidat} 
+            onEdit={handleEditItem}
+            onAdd={() => handleEditItem(null)}
+            onRefresh={refreshCandidat}
+          />
+        );
       case "analyse-ia":
         return <AnalyseTab {...commonProps} />;
       case "memoire-ia":
@@ -214,6 +221,7 @@ export function CandidatTabContent({
             onSuccess={handleEditSuccess}
             onCancel={handleCancelEdit}
             updateField={updateField}
+            editingItemId={editingItemId}
           />
         );
 
@@ -233,6 +241,7 @@ export function CandidatTabContent({
             onSuccess={handleEditSuccess}
             onCancel={handleCancelEdit}
             updateField={updateField}
+            editingItemId={editingItemId}
           />
         );
       case "notes":
@@ -241,7 +250,7 @@ export function CandidatTabContent({
             candidat={candidat}
             onSuccess={handleEditSuccess}
             onCancel={handleCancelEdit}
-            updateField={updateField}
+            editingItemId={editingItemId || undefined}
           />
         );
       case "analyse-ia":
@@ -307,6 +316,32 @@ export function CandidatTabContent({
                 return editingItemId === "reconnaissance-new"
                   ? "Ajouter une reconnaissance"
                   : "Modifier la reconnaissance";
+              }
+              // Cas spécial pour les jobs ciblés
+              if (
+                activeTab === "jobs-cibles" &&
+                editingItemId &&
+                editingItemId.startsWith("job-cible-")
+              ) {
+                return editingItemId === "job-cible-new"
+                  ? "Ajouter un job ciblé"
+                  : "Modifier le job ciblé";
+              }
+              // Cas spécial pour les candidatures
+              if (
+                activeTab === "candidatures" &&
+                editingItemId &&
+                editingItemId.startsWith("candidature-")
+              ) {
+                return editingItemId === "candidature-new"
+                  ? "Ajouter une candidature"
+                  : "Modifier la candidature";
+              }
+              // Cas spécial pour les notes
+              if (activeTab === "notes") {
+                return editingItemId === null
+                  ? "Ajouter une note"
+                  : "Modifier la note";
               }
               // Logique normale pour les autres cas
               return editingItemId

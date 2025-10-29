@@ -23,10 +23,10 @@ export const navigationConfig: NavigationData = {
       icon: MessageSquare,
       items: [
         {
-          title: "Assistant RH",
-          url: "/dashboard/chat/assistant-rh",
+          title: "Talents GPT",
+          url: "/dashboard/chat/talents-gpt",
           icon: Bot,
-          disabled: true,
+          disabled: false,
           description: "Assistant IA pour les tâches RH",
           badge: {
             text: "Bientôt",

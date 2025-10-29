@@ -3,7 +3,13 @@ import { Candidat } from "@/types/candidat";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { supabase } from "@/lib/supabase";
 
 interface CompetencesEditFormProps {
@@ -70,7 +76,7 @@ export function CompetencesEditForm({
     "Médecine d'urgence",
     "Médecine générale",
     "Médecine du travail",
-    "Santé publique"
+    "Santé publique",
   ];
 
   // Déterminer si on ajoute une nouvelle compétence ou on édite une existante
@@ -197,10 +203,12 @@ export function CompetencesEditForm({
         {/* Select des compétences médicales */}
         {!useCustomInput ? (
           <div>
-            <Label htmlFor="competence-select">Sélectionner une compétence médicale</Label>
+            <Label htmlFor="competence-select">
+              Sélectionner une compétence{" "}
+            </Label>
             <Select value={competence} onValueChange={setCompetence}>
               <SelectTrigger>
-                <SelectValue placeholder="Choisissez une compétence médicale" />
+                <SelectValue placeholder="Choisissez une compétence" />
               </SelectTrigger>
               <SelectContent>
                 {competencesMedicales.map((comp) => (

@@ -75,15 +75,15 @@ const navigationItems = [
   },
   {
     id: "analyse-ia",
-    label: "Analyse IA",
+    label: "Talents GPT",
     icon: Brain,
-    badge: "IA",
+    badge: "Bientôt",
   },
   {
     id: "memoire-ia",
     label: "Mémoire IA",
     icon: Database,
-    badge: "IA",
+    badge: "Bientôt",
   },
 ];
 

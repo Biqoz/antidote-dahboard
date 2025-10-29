@@ -45,7 +45,7 @@ export interface Candidat {
   motivations?: MotivationItem[];
 
   // Jobs ciblés (JSONB dans la DB)
-  jobs_cibles?: string[];
+  jobs_cibles?: JobCible[];
 
   // Mémoire IA (JSONB dans la DB)
   memoire_ia?: MemoireIA;
@@ -286,6 +286,14 @@ export interface InteractionIA {
   contexte?: string;
   score_pertinence: number;
   date_interaction: string;
+}
+
+export interface JobCible {
+  id: string;
+  titre: string;
+  description: string;
+  created_at: string;
+  updated_at: string;
 }
 
 // Interface pour les candidatures WordPress

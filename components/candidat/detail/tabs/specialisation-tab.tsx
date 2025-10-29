@@ -1,9 +1,8 @@
 import React from "react";
 import { Candidat, SpecialisationItem } from "@/types/candidat";
 import { Badge } from "@/components/ui/badge";
-
 import { Button } from "@/components/ui/button";
-import { Edit, Trash2 } from "lucide-react";
+import { Edit, Trash2, Plus } from "lucide-react";
 
 interface SpecialisationTabProps {
   candidat: Candidat;
@@ -55,134 +54,102 @@ export function SpecialisationTab({
   };
 
   return (
-    <div className="space-y-4">
-          {specialisations && specialisations.length > 0 && (
-            <div className="space-y-4 mb-6">
-              {specialisations.map(
-                (spec: SpecialisationItem, index: number) => {
-                  const itemId = `specialisation-${index}`;
-                  const isCurrentlyEditing =
-                    isEditing && editingItemId === itemId;
+    <div className="space-y-6">
+      {/* Section Spécialisations */}
+      <div className="border-b border-gray-100 pb-6">
+        <div className="flex justify-end items-center mb-4">
+          {onEditItem && (
+            <Button
+              onClick={() => onEditItem("specialisation-new")}
+              size="sm"
+              className="flex items-center gap-2"
+            >
+              <Plus className="h-4 w-4" />
+              Ajouter une spécialisation
+            </Button>
+          )}
+        </div>
 
-                  return (
-                    <div
-                      key={spec.id}
-                      className={`border rounded-lg p-4 space-y-3 ${
-                        isCurrentlyEditing ? "ring-2 ring-blue-500" : ""
-                      }`}
-                    >
-                      <div className="flex justify-between items-start">
-                        <div>
-                          <h5 className="font-medium text-blue-900">
-                            {spec.nom}
-                          </h5>
-                          <p className="text-sm text-gray-600">
-                            {spec.domaine}
-                          </p>
-                        </div>
-                        <div className="flex gap-2 items-center">
-                          <Badge
-                            variant={
-                              spec.niveau === "expert"
-                                ? "destructive"
-                                : spec.niveau === "avance"
-                                ? "default"
-                                : "secondary"
-                            }
-                          >
-                            {spec.niveau}
-                          </Badge>
-                          {spec.certifie && (
-                            <Badge
-                              variant="outline"
-                              className="text-green-700 border-green-300"
-                            >
-                              Certifications
-                            </Badge>
-                          )}
-                          {onEditItem && !isEditing && (
-                            <div className="flex gap-1 ml-2">
-                              <Button
-                                onClick={() => onEditItem(itemId)}
-                                variant="outline"
-                                size="sm"
-                                className="h-8 w-8 p-0"
-                              >
-                                <Edit className="h-3 w-3" />
-                              </Button>
-                              <Button
-                                onClick={() => handleDelete(index)}
-                                variant="outline"
-                                size="sm"
-                                className="h-8 w-8 p-0 text-red-600 hover:text-red-800"
-                              >
-                                <Trash2 className="h-3 w-3" />
-                              </Button>
-                            </div>
-                          )}
-                        </div>
-                      </div>
+        {specialisations && specialisations.length > 0 ? (
+          <div className="space-y-4">
+          {specialisations.map((spec: SpecialisationItem, index: number) => {
+            const itemId = `specialisation-${index}`;
+            const isCurrentlyEditing = isEditing && editingItemId === itemId;
 
-                      {spec.certifie && spec.organisme_certification && (
-                        <div className="text-sm">
-                          <span className="font-medium">Certification : </span>
-                          <span className="text-gray-700">
-                            {spec.organisme_certification}
-                          </span>
-                          {spec.date_obtention && (
-                            <span className="text-gray-500">
-                              {" "}
-                              -{" "}
-                              {new Date(
-                                spec.date_obtention
-                              ).toLocaleDateString()}
-                            </span>
-                          )}
-                        </div>
-                      )}
+            return (
+              <div
+                key={spec.id || index}
+                className={`border rounded-lg p-4 space-y-3 ${
+                  isCurrentlyEditing ? "ring-2 ring-blue-500 bg-blue-50" : ""
+                }`}
+              >
+                <div className="flex justify-between items-start">
+                  <div className="flex-1">
+                    <h5 className="font-medium text-blue-900 text-lg">{spec.nom}</h5>
+                    <p className="text-sm text-gray-600 font-medium mt-1">
+                      <span className="text-gray-500">Domaine:</span> {spec.domaine}
+                    </p>
+                  </div>
+                  {onEditItem && !isEditing && (
+                    <div className="flex gap-1 ml-4">
+                      <Button
+                        onClick={() => onEditItem(itemId)}
+                        variant="ghost"
+                        size="sm"
+                        className="h-8 w-8 p-0 hover:bg-blue-100"
+                      >
+                        <Edit className="h-4 w-4 text-blue-600" />
+                      </Button>
+                      <Button
+                        onClick={() => handleDelete(index)}
+                        variant="ghost"
+                        size="sm"
+                        className="h-8 w-8 p-0 hover:bg-red-100"
+                      >
+                        <Trash2 className="h-4 w-4 text-red-600" />
+                      </Button>
                     </div>
-                  );
-                }
-              )}
-            </div>
-          )}
-
-          {/* Ancienne spécialisation simple (pour compatibilité) */}
-          {candidat.specialisation && (
-            <div className="mb-4">
-              <h4 className="font-medium mb-2">Spécialisation principale</h4>
-              <Badge variant="default" className="text-base px-3 py-1">
-                {candidat.specialisation}
-              </Badge>
-            </div>
-          )}
-
-
-
-          {candidat.source_motivation?.preferences_poste?.secteur_prefere &&
-            candidat.source_motivation.preferences_poste.secteur_prefere
-              .length > 0 && (
-              <div>
-                <h4 className="font-medium mb-2">Secteurs préférés</h4>
-                <div className="flex flex-wrap gap-2">
-                  {candidat.source_motivation.preferences_poste.secteur_prefere.map(
-                    (secteur: string, index: number) => (
-                      <Badge key={index} variant="secondary">
-                        {secteur}
-                      </Badge>
-                    )
                   )}
                 </div>
               </div>
-            )}
+            );
+          })}
+          </div>
+        ) : (
+          <div className="text-gray-500 text-center py-8">
+            Aucune spécialisation renseignée
+          </div>
+        )}
+      </div>
 
-          {/* Message si aucune spécialisation */}
-          {(!specialisations || specialisations.length === 0) &&
-            !candidat.specialisation && (
-              <p className="text-gray-500 text-center py-8">
-                Aucune spécialisation renseignée
-              </p>
-            )}
+      {/* Ancienne spécialisation simple (pour compatibilité) */}
+      {candidat.specialisation && (
+        <div className="mb-4">
+          <h4 className="font-medium mb-2">Spécialisation principale</h4>
+          <Badge variant="default" className="text-base px-3 py-1">
+            {candidat.specialisation}
+          </Badge>
+        </div>
+      )}
+
+      {candidat.source_motivation?.preferences_poste?.secteur_prefere &&
+        candidat.source_motivation.preferences_poste.secteur_prefere.length >
+          0 && (
+          <div>
+            <h4 className="font-medium mb-2">Secteurs préférés</h4>
+            <div className="flex flex-wrap gap-2">
+              {candidat.source_motivation.preferences_poste.secteur_prefere.map(
+                (secteur: string, index: number) => (
+                  <Badge key={index} variant="secondary">
+                    {secteur}
+                  </Badge>
+                )
+              )}
+            </div>
+          </div>
+        )}
+
+
     </div>
   );
 }

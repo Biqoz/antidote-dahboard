@@ -85,6 +85,7 @@ export function MotivationEditForm({
             <SelectItem value="financieres">Financières</SelectItem>
             <SelectItem value="professionnelles">Professionnelles</SelectItem>
             <SelectItem value="personnelles">Personnelles</SelectItem>
+            <SelectItem value="autres">Autres</SelectItem>
           </SelectContent>
         </Select>
       </div>

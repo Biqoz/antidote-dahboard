@@ -32,7 +32,9 @@ export function VueEnsembleTab({ candidat }: VueEnsembleTabProps) {
                 <Target className="h-5 w-5 text-green-600" />
               </div>
               <div>
-                <p className="text-sm font-medium text-gray-600">Match actif</p>
+                <p className="text-sm font-medium text-gray-600">
+                  Matchs actifs
+                </p>
                 <p className="text-2xl font-bold text-gray-900">
                   {candidat.candidatures?.filter(
                     (c) => c.statut === "entretien"
@@ -52,7 +54,7 @@ export function VueEnsembleTab({ candidat }: VueEnsembleTabProps) {
               </div>
               <div>
                 <p className="text-sm font-medium text-gray-600">
-                  Match détecté
+                  Matchs détectés
                 </p>
                 <p className="text-2xl font-bold text-gray-900">
                   {candidat.analyse_ia?.competences_detectees?.length || 0}
@@ -86,12 +88,12 @@ export function VueEnsembleTab({ candidat }: VueEnsembleTabProps) {
 
       {/* 2 cartes Analyse IA et Mémoire IA */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Analyse IA */}
+        {/* Talents GPT */}
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Brain className="h-5 w-5 text-blue-600" />
-              Analyse IA
+              Talents GPT
             </CardTitle>
           </CardHeader>
           <CardContent>

@@ -1,93 +1,150 @@
 import React, { useState } from "react";
-import { Candidat } from "@/types/candidat";
+import { Candidat, JobCible } from "@/types/candidat";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { supabase } from "@/lib/supabase";
-import { Plus, Trash2 } from "lucide-react";
 
 interface JobsCiblesEditFormProps {
   candidat: Candidat;
   onSuccess: () => void;
   onCancel: () => void;
   updateField?: (field: string, value: unknown) => Promise<void>;
+  editingItemId?: string | null;
 }
 
 export function JobsCiblesEditForm({
   candidat,
   onSuccess,
   onCancel,
+  updateField,
+  editingItemId,
 }: JobsCiblesEditFormProps) {
-  const [jobsCibles, setJobsCibles] = useState(candidat.jobs_cibles || []);
+  // Déterminer si on édite un élément spécifique ou on ajoute un nouveau
+  const isEditingSpecific = editingItemId && editingItemId.startsWith("job-cible-");
+  const isAddingNew = editingItemId === "job-cible-new";
+  const editingIndex = isEditingSpecific && !isAddingNew ? parseInt(editingItemId.split("-")[2]) : -1;
+
+  // Gérer les jobs ciblés qui peuvent être stockés comme string JSON ou array
+  let jobsCiblesArray: JobCible[] = [];
+  try {
+    if (Array.isArray(candidat.jobs_cibles)) {
+      jobsCiblesArray = candidat.jobs_cibles;
+    } else if (typeof candidat.jobs_cibles === "string") {
+      jobsCiblesArray = JSON.parse(candidat.jobs_cibles);
+    } else if (candidat.jobs_cibles) {
+      jobsCiblesArray = [candidat.jobs_cibles];
+    }
+  } catch (error) {
+    console.error("Erreur lors du parsing des jobs ciblés:", error);
+    jobsCiblesArray = [];
+  }
+
+  // État pour l'élément en cours d'édition
+  const [jobCible, setJobCible] = useState<JobCible>(() => {
+    if (isEditingSpecific && !isAddingNew && jobsCiblesArray[editingIndex]) {
+      return jobsCiblesArray[editingIndex];
+    }
+    // Nouvel élément
+    return {
+      id: Date.now().toString(),
+      titre: "",
+      description: "",
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    };
+  });
+
   const [isLoading, setIsLoading] = useState(false);
-
-  const addJob = () => {
-    setJobsCibles([...jobsCibles, ""]);
-  };
-
-  const removeJob = (index: number) => {
-    setJobsCibles(jobsCibles.filter((_, i) => i !== index));
-  };
-
-  const updateJob = (index: number, value: string) => {
-    const updated = [...jobsCibles];
-    updated[index] = value;
-    setJobsCibles(updated);
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!jobCible.titre.trim()) {
+      alert("Le titre du job ciblé est requis");
+      return;
+    }
+
     setIsLoading(true);
 
     try {
-      const { error } = await supabase
-        .from("profils")
-        .update({
-          jobs_cibles: jobsCibles.filter((j) => j.trim() !== ""),
+      let updatedJobsCibles: JobCible[];
+
+      if (isAddingNew) {
+        // Ajouter un nouveau job ciblé
+        updatedJobsCibles = [...jobsCiblesArray, {
+          ...jobCible,
+          id: Date.now().toString(),
+          created_at: new Date().toISOString(),
           updated_at: new Date().toISOString(),
-        })
-        .eq("id", candidat.id);
+        }];
+      } else if (isEditingSpecific && editingIndex >= 0) {
+        // Modifier un job ciblé existant
+        updatedJobsCibles = [...jobsCiblesArray];
+        updatedJobsCibles[editingIndex] = {
+          ...jobCible,
+          updated_at: new Date().toISOString(),
+        };
+      } else {
+        throw new Error("Mode d'édition non reconnu");
+      }
 
-      if (error) throw error;
+      if (updateField) {
+        await updateField("jobs_cibles", updatedJobsCibles);
+      } else {
+        // Fallback vers Supabase direct
+        const { error } = await supabase
+          .from("profils")
+          .update({
+            jobs_cibles: updatedJobsCibles,
+            updated_at: new Date().toISOString(),
+          })
+          .eq("id", candidat.id);
 
-      alert("Jobs ciblés mis à jour avec succès");
+        if (error) throw error;
+      }
+
       onSuccess();
     } catch (error) {
       console.error("Erreur lors de la mise à jour:", error);
-      alert("Erreur lors de la mise à jour des jobs ciblés");
+      alert("Erreur lors de la mise à jour du job ciblé");
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
+    <form onSubmit={handleSubmit} className="space-y-6">
       <div className="flex justify-between items-center">
-        <Label>Jobs ciblés</Label>
-        <Button type="button" onClick={addJob} variant="outline" size="sm">
-          <Plus className="h-4 w-4 mr-2" />
-          Ajouter
-        </Button>
+        <h4 className="text-md font-medium">
+          {isAddingNew ? "Ajouter un job ciblé" : "Modifier le job ciblé"}
+        </h4>
       </div>
 
-      {jobsCibles.map((job, index) => (
-        <div key={index} className="flex gap-2">
-          <Input
-            value={job}
-            onChange={(e) => updateJob(index, e.target.value)}
-            placeholder="Intitulé du poste ciblé"
-          />
-          <Button
-            type="button"
-            onClick={() => removeJob(index)}
-            variant="outline"
-            size="sm"
-            className="text-red-600 hover:text-red-800"
-          >
-            <Trash2 className="h-4 w-4" />
-          </Button>
-        </div>
-      ))}
+      {/* Titre du job */}
+      <div>
+        <Label htmlFor="titre">Titre du poste ciblé *</Label>
+        <Input
+          id="titre"
+          value={jobCible.titre}
+          onChange={(e) => setJobCible({ ...jobCible, titre: e.target.value })}
+          placeholder="Ex: Développeur Full Stack, Chef de projet..."
+          required
+        />
+      </div>
+
+      {/* Description des aspirations */}
+      <div>
+        <Label htmlFor="description">Description des aspirations</Label>
+        <Textarea
+          id="description"
+          value={jobCible.description}
+          onChange={(e) => setJobCible({ ...jobCible, description: e.target.value })}
+          placeholder="Décrivez les aspirations, motivations et objectifs pour ce poste..."
+          rows={4}
+        />
+      </div>
 
       <div className="flex justify-end gap-2 pt-4">
         <Button type="button" variant="outline" onClick={onCancel}>

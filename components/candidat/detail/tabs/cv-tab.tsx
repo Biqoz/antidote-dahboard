@@ -219,7 +219,7 @@ export function CvTab({
       <TabsContent value="experience" className="space-y-4">
         <div className="flex items-center justify-between p-4 border-b border-gray-200">
           <h2 className="text-lg font-semibold">
-            Expériences professionnelles
+            Expériences professionnelles (Sélection)
           </h2>
           {onEditItem && (
             <Button

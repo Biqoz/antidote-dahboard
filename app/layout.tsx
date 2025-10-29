@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Group Optimal - Dashboard",
-  description: "Dasboard Group Optimal",
+  title: "Cercle-Talents - Optimal",
+  description: "Cercle-Talents - Optimal",
 };
 
 export default function RootLayout({
