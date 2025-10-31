@@ -21,9 +21,7 @@ export function PageLayout({ children, breadcrumbs }: PageLayoutProps) {
           </div>
         )}
         {/* Contenu scrollable */}
-        <div className="flex-1 overflow-auto bg-gray-50/30">
-          {children}
-        </div>
+        <div className="flex-1 overflow-auto bg-gray-50/30">{children}</div>
       </SidebarInset>
     </SidebarProvider>
   );

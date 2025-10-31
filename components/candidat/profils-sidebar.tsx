@@ -96,7 +96,7 @@ export function ProfilsSidebar({
   return (
     <div
       className={cn(
-        "w-64 bg-white border-r border-gray-200 h-full flex flex-col",
+        "w-64 bg-white border-r border-gray-200 h-full flex flex-col fixed",
         className
       )}
     >

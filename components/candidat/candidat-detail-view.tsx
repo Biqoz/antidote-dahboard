@@ -19,15 +19,9 @@ export function CandidatDetailView({
 
   return (
     <div className="space-y-6">
-      <CandidatDetailHeader
-        candidat={candidat}
-        onBack={onBack}
-      />
-      
-      <CandidatTabContent
-        candidat={candidat}
-        activeTab={activeTab}
-      />
+      <CandidatDetailHeader candidat={candidat} onBack={onBack} />
+
+      <CandidatTabContent candidat={candidat} activeTab={activeTab} />
     </div>
   );
 }

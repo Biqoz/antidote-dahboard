@@ -14,12 +14,11 @@ export default function CandidatsPage() {
     null
   );
   const [activeSection, setActiveSection] = useState("vue-ensemble");
-  
+
   // États pour les modales
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [candidatToEdit, setCandidatToEdit] = useState<Candidat | null>(null);
 
-  
   const { updateCandidat, createCandidat } = useCandidats();
 
   const breadcrumbs = [
@@ -48,23 +47,27 @@ export default function CandidatsPage() {
     setIsEditModalOpen(true);
   };
 
-  const handleCreateSubmit = async (candidatData: Omit<Candidat, 'id' | 'created_at' | 'updated_at'>) => {
+  const handleCreateSubmit = async (
+    candidatData: Omit<Candidat, "id" | "created_at" | "updated_at">
+  ) => {
     try {
       await createCandidat(candidatData);
     } catch (error) {
-      console.error('Erreur lors de la création du candidat:', error);
+      console.error("Erreur lors de la création du candidat:", error);
     }
   };
 
-  const handleEditSubmit = async (candidatData: Omit<Candidat, 'id' | 'created_at' | 'updated_at'>) => {
+  const handleEditSubmit = async (
+    candidatData: Omit<Candidat, "id" | "created_at" | "updated_at">
+  ) => {
     if (!candidatToEdit) return;
-    
+
     try {
       await updateCandidat(candidatToEdit.id, candidatData);
       setIsEditModalOpen(false);
       setCandidatToEdit(null);
     } catch (error) {
-      console.error('Erreur lors de la modification du candidat:', error);
+      console.error("Erreur lors de la modification du candidat:", error);
     }
   };
 
@@ -91,9 +94,10 @@ export default function CandidatsPage() {
           onBackToList={handleBackToList}
           onEditCandidat={handleEditCandidat}
           onCreateSubmit={handleCreateSubmit}
+          showSidebar={viewMode === "detail"}
         />
       </div>
-      
+
       {/* Modale de modification */}
       {candidatToEdit && (
         <CandidatForm
@@ -104,10 +108,6 @@ export default function CandidatsPage() {
           mode="edit"
         />
       )}
-
-
-
-
     </PageLayout>
   );
 }

@@ -16,7 +16,10 @@ interface ProfilsContentProps {
   onProfilSelect?: (profil: Candidat) => void;
   onBackToList?: () => void;
   onEditCandidat?: (candidat: Candidat) => void;
-  onCreateSubmit?: (candidatData: Omit<Candidat, 'id' | 'created_at' | 'updated_at'>) => Promise<void>;
+  onCreateSubmit?: (
+    candidatData: Omit<Candidat, "id" | "created_at" | "updated_at">
+  ) => Promise<void>;
+  showSidebar?: boolean;
 }
 
 export function ProfilsContent({
@@ -26,6 +29,7 @@ export function ProfilsContent({
   onProfilSelect,
   onBackToList,
   onCreateSubmit,
+  showSidebar = false,
 }: ProfilsContentProps) {
   const { candidats, loading } = useCandidats();
   const [filteredCandidats, setFilteredCandidats] = useState<Candidat[]>([]);
@@ -42,16 +46,22 @@ export function ProfilsContent({
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-xl font-bold text-gray-900">Vivier de talents</h1>
+              <h1 className="text-xl font-bold text-gray-900">
+                Vivier de talents
+              </h1>
               <p className="text-gray-600 text-sm">
-                {displayedCandidats.length} candidat{displayedCandidats.length > 1 ? "s" : ""} 
-                {isSearchActive ? " trouvé" + (displayedCandidats.length > 1 ? "s" : "") : " dans le vivier"}
-                {isSearchActive && candidats.length !== displayedCandidats.length && (
-                  <span> sur {candidats.length} au total</span>
-                )}
+                {displayedCandidats.length} candidat
+                {displayedCandidats.length > 1 ? "s" : ""}
+                {isSearchActive
+                  ? " trouvé" + (displayedCandidats.length > 1 ? "s" : "")
+                  : " dans le vivier"}
+                {isSearchActive &&
+                  candidats.length !== displayedCandidats.length && (
+                    <span> sur {candidats.length} au total</span>
+                  )}
               </p>
             </div>
-            <Button 
+            <Button
               onClick={() => setShowCreateForm(!showCreateForm)}
               className="bg-black hover:bg-gray-800 text-white"
             >
@@ -64,7 +74,9 @@ export function ProfilsContent({
           {showCreateForm && (
             <div className="border rounded-lg p-4 bg-gray-50">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-semibold">Ajouter un nouveau candidat</h3>
+                <h3 className="text-lg font-semibold">
+                  Ajouter un nouveau candidat
+                </h3>
                 <Button
                   variant="ghost"
                   size="sm"
@@ -132,7 +144,7 @@ export function ProfilsContent({
   };
 
   return (
-    <div className={`flex-1 ${viewMode === "list" ? "p-8" : "p-6"}`}>
+    <div className={`flex-1 ${viewMode === "list" ? "p-8" : "p-6"} ${showSidebar ? "ml-64" : ""}`}>
       {renderContent()}
     </div>
   );
