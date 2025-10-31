@@ -102,9 +102,7 @@ export default function TalentsGPTPage() {
             />
           </div>
 
-          <h1 className="text-3xl font-bold text-gray-900">
-            TalentsGPT pour Optimal
-          </h1>
+          <h1 className="text-3xl font-bold text-gray-900">TalentsGPT</h1>
 
           <p className="text-base text-gray-600 max-w-2xl mx-auto">
             Trouvez les talents que vous cherchez, rédigez vos contenus et
