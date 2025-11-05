@@ -1,5 +1,6 @@
 "use client"
 
+import { useState } from "react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import {
@@ -13,22 +14,52 @@ import { Field } from "@/components/ui/field"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { useRouter } from "next/navigation"
+import { supabase } from "@/lib/supabase"
+import { Alert, AlertDescription } from "@/components/ui/alert"
+import { Loader2 } from "lucide-react"
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
   const router = useRouter()
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
-    // Redirection vers le dashboard sans validation
-    router.push("/dashboard")
-  }
+    setError(null)
+    setLoading(true)
 
-  const handleGoogleLogin = () => {
-    // Redirection vers le dashboard sans validation
-    router.push("/dashboard")
+    try {
+      console.log("Tentative de connexion avec:", email)
+
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      })
+
+      console.log("Réponse Supabase:", { data, error })
+
+      if (error) {
+        console.error("Erreur Supabase:", error)
+        setError(error.message)
+        return
+      }
+
+      if (data.user) {
+        console.log("Utilisateur connecté:", data.user.email)
+        router.push("/dashboard")
+        router.refresh()
+      }
+    } catch (err) {
+      console.error("Erreur catch:", err)
+      setError("Une erreur est survenue lors de la connexion")
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -37,18 +68,27 @@ export function LoginForm({
         <CardHeader>
           <CardTitle>Connexion à votre compte</CardTitle>
           <CardDescription>
-            Entrez vos informations ci-dessous (ou laissez vide et cliquez sur Login)
+            Entrez vos informations ci-dessous pour vous connecter
           </CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleLogin}>
             <div className="space-y-4">
+              {error && (
+                <Alert variant="destructive">
+                  <AlertDescription>{error}</AlertDescription>
+                </Alert>
+              )}
               <Field>
                 <Label htmlFor="email">Email</Label>
                 <Input
                   id="email"
                   type="email"
                   placeholder="m@example.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  disabled={loading}
                 />
               </Field>
               <Field>
@@ -61,16 +101,26 @@ export function LoginForm({
                     Mot de passe oublié ?
                   </a>
                 </div>
-                <Input id="password" type="password" />
+                <Input
+                  id="password"
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  disabled={loading}
+                />
               </Field>
               <Field>
-                <Button type="submit" className="w-full">Se connecter</Button>
-                <Button variant="outline" type="button" className="w-full" onClick={handleGoogleLogin}>
-                  Se connecter avec Google
+                <Button type="submit" className="w-full" disabled={loading}>
+                  {loading ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Connexion en cours...
+                    </>
+                  ) : (
+                    "Se connecter"
+                  )}
                 </Button>
-                <p className="text-sm text-muted-foreground text-center">
-                  Pas de compte ? <a href="#" className="underline underline-offset-4 hover:text-primary">S&apos;inscrire</a>
-                </p>
               </Field>
             </div>
           </form>

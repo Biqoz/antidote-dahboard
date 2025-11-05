@@ -4,7 +4,8 @@
       "Bash(mkdir:*)",
       "Bash(find:*)",
       "Bash(cat:*)",
-      "WebFetch(domain:group-optimal.com)"
+      "WebFetch(domain:group-optimal.com)",
+      "Bash(npm install:*)"
     ],
     "deny": [],
     "ask": []
