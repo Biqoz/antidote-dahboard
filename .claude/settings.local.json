@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mkdir:*)",
+      "Bash(find:*)",
+      "Bash(cat:*)",
+      "WebFetch(domain:group-optimal.com)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
