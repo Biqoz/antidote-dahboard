@@ -33,6 +33,18 @@ const navigationItems = [
     icon: LayoutDashboard,
   },
   {
+    id: "analyse-ia",
+    label: "Talents GPT",
+    icon: Brain,
+    badge: "Bientôt",
+  },
+  {
+    id: "memoire-ia",
+    label: "Mémoire IA",
+    icon: Database,
+    badge: "Bientôt",
+  },
+  {
     id: "cv",
     label: "CV & Expériences",
     icon: FileText,
@@ -72,18 +84,6 @@ const navigationItems = [
     id: "notes",
     label: "Notes",
     icon: StickyNote,
-  },
-  {
-    id: "analyse-ia",
-    label: "Talents GPT",
-    icon: Brain,
-    badge: "Bientôt",
-  },
-  {
-    id: "memoire-ia",
-    label: "Mémoire IA",
-    icon: Database,
-    badge: "Bientôt",
   },
 ];
 
